@@ -1,0 +1,8 @@
+build
+md_translate.egg-info
+.idea
+.code
+__pycache__
+
+
+

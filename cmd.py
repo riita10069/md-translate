@@ -91,7 +91,7 @@ def mutate_path(ctx, param, value):
 @click.option('--output', help='directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='output some ast files for debug', show_default=True)
-def main(path, src_lang, dest_lang, output, debug):
+def run(path, src_lang, dest_lang, output, debug):
     if path.endswith(".md"):
         if (path.endswith("." + src_lang + ".md") or (
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
@@ -110,4 +110,4 @@ def main(path, src_lang, dest_lang, output, debug):
 
 
 if __name__ == '__main__':
-    main()
+    run()

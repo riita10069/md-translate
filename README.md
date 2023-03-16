@@ -1,6 +1,6 @@
 # md-translate (Markdown Translation Tool)
 
-A CLI tool for translating documents written in markdown.# Directory structure
+A CLI tool for translating documents written in markdown.
 
 ## Prerequirements
 
@@ -34,3 +34,7 @@ Options:
   --debug                         output some ast files for debug
   --help                          Show this message and exit.
 ```
+
+## Acknowledgments
+
+Many thanks to  you for your tremendous contribution.

@@ -16,16 +16,15 @@ def get_dest_file_path(filename, src_lang, dest_lang, output):
     dest_file_path = ''
     output_directory = Path.resolve(Path(output))
     current_directory = Path.cwd()
+
     if output_directory == current_directory:
-        dest_file_path = Path.resolve(Path('.' + filename.strip('.' + src_lang) + '.' + dest_lang + '.md'))
+        dest_file_path = Path.resolve(Path('.' + filename + '.md' if dest_lang == const.LANG_EN else filename + '.' + dest_lang + '.md'))
         dest_file_path = str(dest_file_path)
     else:
         md_file_name = Path(filename).name
-        dest_file_path = os.path.join(output_directory, md_file_name.strip('.' + src_lang) + '.md')
+        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if src_lang == const.LANG_EN else md_file_name + '.' + src_lang + '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
 
-    if dest_file_path.endswith('.en.md'):
-        return dest_file_path.replace('.en.md', '.md')
     return str(dest_file_path)
 
 

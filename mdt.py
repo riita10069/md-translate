@@ -112,7 +112,7 @@ def run(path, r, src_lang, dest_lang, output, debug):
 
         else:
             for filename in os.listdir(path):
-                if os.path.isfile(filename):
+                if os.path.isfile(os.path.join(path, filename)):
                     if (filename.endswith("." + src_lang + ".md") or (
                             src_lang == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, filename.removesuffix('.md')))

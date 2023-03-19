@@ -83,7 +83,7 @@ def mutate_path(ctx, param, value):
 @click.command()
 @click.option('--path', help='directory or file path where you want to translate', required=True,
               callback=mutate_path, type=click.Path(exists=True))
-@click.option('--r', is_flag=True, help='translate recursively for subdirectories', show_default=True)
+@click.option('-r', '--recursive', is_flag=True, help='translate recursively for subdirectories', show_default=True)
 @click.option('--src-lang', help='source language', default=const.LANG_EN, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--dest-lang', help='post-translation language', default=const.LANG_JA, show_default=True,
@@ -91,7 +91,7 @@ def mutate_path(ctx, param, value):
 @click.option('--output', help='directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='output some ast files for debug', show_default=True)
-def run(path, r, src_lang, dest_lang, output, debug):
+def run(path, recursive, src_lang, dest_lang, output, debug):
     if path.endswith(".md"):
         if (path.endswith("." + src_lang + ".md") or (
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
@@ -99,7 +99,7 @@ def run(path, r, src_lang, dest_lang, output, debug):
                 path.removesuffix('.md') if src_lang == const.LANG_EN else path.removesuffix('.' + src_lang + '.md'),
                 src_lang, dest_lang, output, debug)
     else:
-        if r:
+        if recursive:
             for current_dir, dirs, files in os.walk(path):
                 for filename in files:
                     if (filename.endswith("." + src_lang + ".md") or (

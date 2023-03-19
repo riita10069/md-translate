@@ -16,16 +16,15 @@ def get_dest_file_path(filename, src_lang, dest_lang, output):
     dest_file_path = ''
     output_directory = Path.resolve(Path(output))
     current_directory = Path.cwd()
+
     if output_directory == current_directory:
-        dest_file_path = Path.resolve(Path('.' + filename.strip('.' + src_lang) + '.' + dest_lang + '.md'))
+        dest_file_path = Path.resolve(Path('.' + filename + '.md' if dest_lang == const.LANG_EN else filename + '.' + dest_lang + '.md'))
         dest_file_path = str(dest_file_path)
     else:
         md_file_name = Path(filename).name
-        dest_file_path = os.path.join(output_directory, md_file_name.strip('.' + src_lang) + '.md')
+        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if src_lang == const.LANG_EN else md_file_name + '.' + src_lang + '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
 
-    if dest_file_path.endswith('.en.md'):
-        return dest_file_path.replace('.en.md', '.md')
     return str(dest_file_path)
 
 
@@ -84,6 +83,7 @@ def mutate_path(ctx, param, value):
 @click.command()
 @click.option('--path', help='directory or file path where you want to translate', required=True,
               callback=mutate_path, type=click.Path(exists=True))
+@click.option('-r', '--recursive', is_flag=True, help='translate recursively for subdirectories', show_default=True)
 @click.option('--src-lang', help='source language', default=const.LANG_EN, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--dest-lang', help='post-translation language', default=const.LANG_JA, show_default=True,
@@ -91,7 +91,7 @@ def mutate_path(ctx, param, value):
 @click.option('--output', help='directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='output some ast files for debug', show_default=True)
-def run(path, src_lang, dest_lang, output, debug):
+def run(path, recursive, src_lang, dest_lang, output, debug):
     if path.endswith(".md"):
         if (path.endswith("." + src_lang + ".md") or (
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
@@ -99,14 +99,25 @@ def run(path, src_lang, dest_lang, output, debug):
                 path.removesuffix('.md') if src_lang == const.LANG_EN else path.removesuffix('.' + src_lang + '.md'),
                 src_lang, dest_lang, output, debug)
     else:
-        for filename in os.listdir(path):
-            if os.path.isfile(filename):
-                if (filename.endswith("." + src_lang + ".md") or (
-                        src_lang == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
-                    click.echo("translate " + os.path.join(path, filename.removesuffix('.md')))
-                    translate_page(
-                        os.path.join(path, filename).removesuffix('.md') if src_lang == const.LANG_EN else os.path.join(
-                            path, filename).removesuffix('.' + src_lang + '.md'), src_lang, dest_lang, output, debug)
+        if recursive:
+            for current_dir, dirs, files in os.walk(path):
+                for filename in files:
+                    if (filename.endswith("." + src_lang + ".md") or (
+                            src_lang == const.LANG_EN and "." not in filename.rstrip(".md"))):
+                        click.echo("translate " + os.path.join(current_dir, filename.removesuffix('.md')))
+                        translate_page(
+                            os.path.join(current_dir, filename).removesuffix('.md') if src_lang == const.LANG_EN else os.path.join(
+                                current_dir, filename).removesuffix('.' + src_lang + '.md'), src_lang, dest_lang, output, debug)
+
+        else:
+            for filename in os.listdir(path):
+                if os.path.isfile(os.path.join(path, filename)):
+                    if (filename.endswith("." + src_lang + ".md") or (
+                            src_lang == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
+                        click.echo("translate " + os.path.join(path, filename.removesuffix('.md')))
+                        translate_page(
+                            os.path.join(path, filename).removesuffix('.md') if src_lang == const.LANG_EN else os.path.join(
+                                path, filename).removesuffix('.' + src_lang + '.md'), src_lang, dest_lang, output, debug)
 
 
 if __name__ == '__main__':

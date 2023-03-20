@@ -5,19 +5,28 @@ A CLI tool for translating documents written in markdown.
 ## Prerequirements
 
 ```
-npm install -g remark-cli
-npm install -g remark-directive
+$ brew install awscli
+$ aws configure 
+$ npm install -g remark-cli
+$ npm install -g remark-directive
 ```
+
+> **Note**
+> Make sure to allow the `translate:TranslateText` action
+> And you have to specify an aws default region.
+
 
 ## Instalation
 
 ```
-pip3 install git+https://github.com/riita10069/md-translate.git
+$ pip3 install git+https://github.com/riita10069/md-translate.git
 ```
 
 ## Usage
 
-`mdt --path index.md`
+```
+$ mdt --path index.md
+```
 
 ### OPTIONS
 

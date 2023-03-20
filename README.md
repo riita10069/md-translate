@@ -11,10 +11,9 @@ $ npm install -g remark-cli
 $ npm install -g remark-directive
 ```
 
-> **Note**
-> Make sure to allow the `translate:TranslateText` action
+> **Note**  
+> Make sure to allow the `translate:TranslateText` action  
 > And you have to specify an aws default region.
-
 
 ## Instalation
 

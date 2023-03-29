@@ -18,7 +18,7 @@ def get_dest_file_path(filename, src_lang, dest_lang, output):
     current_directory = Path.cwd()
 
     if output_directory == current_directory:
-        dest_file_path = Path.resolve(Path('.' + filename + '.md' if dest_lang == const.LANG_EN else filename + '.' + dest_lang + '.md'))
+        dest_file_path = Path.resolve(Path(filename + '.md' if dest_lang == const.LANG_EN else filename + '.' + dest_lang + '.md'))
         dest_file_path = str(dest_file_path)
     else:
         md_file_name = Path(filename).name

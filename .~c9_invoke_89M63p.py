@@ -120,3 +120,37 @@ def run(path, recursive, src_lang, dest_lang, output, debug):
 
 if __name__ == '__main__':
     run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

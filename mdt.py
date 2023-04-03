@@ -24,8 +24,10 @@ def get_dest_file_path(filename, src_lang, dest_lang, output):
         md_file_name = Path(filename).name
         dest_file_path = os.path.join(output_directory, md_file_name + '.md' if src_lang == const.LANG_EN else md_file_name + '.' + src_lang + '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
+
     if dest_file_path.endswith('.' + const.LANG_EN + '.' + dest_lang + '.md'):
         return dest_file_path.replace('.' + const.LANG_EN, '')
+
     return str(dest_file_path)
 
 

@@ -4,3 +4,4 @@ md_translate.egg-info
 .code
 __pycache__
 sample-*
+ast*.json

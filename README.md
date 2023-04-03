@@ -34,6 +34,8 @@ Options:
   --path PATH                     directory or file path where you want to
                                   translate  [required]
   -r, --recursive                 translate recursively for subdirectories
+  --hugo                          translate with hugo front matter, which is
+                                  metadata about hugo site
   --src-lang [af|sq|am|ar|hy|az|bn|bs|bg|ca|zh|zh-TW|hr|cs|da|fa-AF|nl|en|et|fa|tl|fi|fr|fr-CA|ka|de|el|gu|ht|ha|he|hi|hu|is|id|ga|it|ja|kn|kk|ko|lv|lt|mk|ms|ml|mt|mr|mn|no|ps|pl|pt|pt-PT|pa|ro|ru|sr|si|sk|sl|so|es|es-MX|sw|sv|ta|te|th|tr|uk|ur|uz|vi|cy]
                                   source language  [default: en]
   --dest-lang [af|sq|am|ar|hy|az|bn|bs|bg|ca|zh|zh-TW|hr|cs|da|fa-AF|nl|en|et|fa|tl|fi|fr|fr-CA|ka|de|el|gu|ht|ha|he|hi|hu|is|id|ga|it|ja|kn|kk|ko|lv|lt|mk|ms|ml|mt|mr|mn|no|ps|pl|pt|pt-PT|pa|ro|ru|sr|si|sk|sl|so|es|es-MX|sw|sv|ta|te|th|tr|uk|ur|uz|vi|cy]

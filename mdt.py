@@ -97,7 +97,7 @@ def run(path, recursive, src_lang, dest_lang, output, debug):
         if (path.endswith("." + src_lang + ".md") or (
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
             translate_page(
-                re.sub('\.md$', '', path) if src_lang == const.LANG_EN else re.sub('.' + src_lang + '.md', '', path),
+                re.sub('\.md$', '', path) if src_lang == const.LANG_EN else re.sub('\.' + src_lang + '.md', '', path),
                 src_lang, dest_lang, output, debug)
     else:
         if recursive:

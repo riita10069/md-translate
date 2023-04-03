@@ -24,7 +24,7 @@ $ pip3 install git+https://github.com/riita10069/md-translate.git
 ## Usage
 
 ```
-$ mdt --path index.md
+$ mdt --path index.md --hugo
 ```
 
 ### OPTIONS

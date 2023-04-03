@@ -99,7 +99,7 @@ def run(path, recursive, src_lang, dest_lang, output, debug):
         if (path.endswith("." + src_lang + ".md") or (
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
             translate_page(
-                path.removesuffix('.md') if src_lang == const.LANG_EN else path.removesuffix('.' + src_lang + '.md'),
+                re.sub('\.md$', '', path) if src_lang == const.LANG_EN else re.sub('\.' + src_lang + '.md', '', path),
                 src_lang, dest_lang, output, debug)
     else:
         if recursive:
@@ -107,21 +107,18 @@ def run(path, recursive, src_lang, dest_lang, output, debug):
                 for filename in files:
                     if (filename.endswith("." + src_lang + ".md") or (
                             src_lang == const.LANG_EN and "." not in filename.rstrip(".md"))):
-                        click.echo("translate " + os.path.join(current_dir, filename.removesuffix('.md')))
+                        click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
                         translate_page(
-                            os.path.join(current_dir, filename).removesuffix('.md') if src_lang == const.LANG_EN else os.path.join(
-                                current_dir, filename).removesuffix('.' + src_lang + '.md'), src_lang, dest_lang, output, debug)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if src_lang == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), src_lang, dest_lang, output, debug)
 
         else:
             for filename in os.listdir(path):
                 if os.path.isfile(os.path.join(path, filename)):
                     if (filename.endswith("." + src_lang + ".md") or (
                             src_lang == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
-                        click.echo("translate " + os.path.join(path, filename.removesuffix('.md')))
+                        click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            os.path.join(path, filename).removesuffix('.md') if src_lang == const.LANG_EN else os.path.join(
-                                path, filename).removesuffix('.' + src_lang + '.md'), src_lang, dest_lang, output, debug)
-
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if src_lang == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), src_lang, dest_lang, output, debug)
 
 if __name__ == '__main__':
     run()

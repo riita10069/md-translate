@@ -107,7 +107,7 @@ def run(path, recursive, hugo, src_lang, dest_lang, output, debug):
                     src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
             translate_page(
                 path.removesuffix('.md') if src_lang == const.LANG_EN else path.removesuffix('.' + src_lang + '.md'),
-                src_lang, dest_lang, output, debug)
+                src_lang, dest_lang, is_hugo, output, debug)
     else:
         if recursive:
             for current_dir, dirs, files in os.walk(path):

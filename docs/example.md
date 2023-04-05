@@ -1,7 +1,4 @@
 # Workshop-translator command examples
-This command line tool minumum requires `--path` option to designate a file or folder as the translation targate.
-
-The default translation source language regarded as English and translation targate language is Japanese. User can choose source language and targate language by using `--from` and `--to` options with translation language codes.
 
 1. To translate a index.md file from English to Japanese
 ```

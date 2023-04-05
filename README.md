@@ -2,15 +2,6 @@
 
 A CLI tool for translating documents written in markdown.
 
-This command line tool minumum requires `--path` or `-r --path` options to designate a file or folder as the translation targate.
-
-Default translation source language settings and translation targate language are English and Japanese. User can choose source language and targate language by using `--from` and `--to` options with translation language codes.
-
-User can use `--output` option to decide output folder (the folder need to exist).
-
-For more information see : `mdt --help`
-For command examples see [example](./docs/example.md)
-
 ## Python version requirements
 python 3.6 ~ 
 
@@ -38,6 +29,15 @@ $ pip3 install git+https://github.com/riita10069/md-translate.git
 ```
 $ mdt --path index.md
 ```
+
+This command line tool minumum requires `--path` or `-r --path` options to designate a file or folder as the translation targate.
+
+Default translation source language settings and translation targate language are English and Japanese. User can choose source language and targate language by using `--from` and `--to` options with translation language codes.
+
+User can use `--output` option to decide output folder (the folder need to exist).
+
+For more information see : `mdt --help`
+For command examples see [example](./docs/example.md)
 
 ### OPTIONS
 

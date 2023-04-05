@@ -19,6 +19,6 @@ mdt -r --path samples
 
 4. To translate a file and output to a designated folder (name: translated) from English to Chinese
 ```
-mkdir output
+mkdir translated
 mdt --path index.md --from en --to zh --output translated
 ```

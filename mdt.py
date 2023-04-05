@@ -22,7 +22,7 @@ def get_dest_file_path(filename, from_, to, output):
         dest_file_path = str(dest_file_path)
     else:
         md_file_name = Path(filename).name
-        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if to == const.LANG_EN else md_file_name + '.' + to + '.md')
+        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if to == const.LANG_EN else md_file_name + '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
 
     if dest_file_path.endswith('.' + const.LANG_EN + '.' + to + '.md'):
@@ -42,20 +42,18 @@ def translate_page(filename, from_, to, is_hugo, output, debug):
     if is_hugo:
         translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
             src_file_path, temp_file_path, from_, to)
+        # markdown to json
+        remark.mdToJson(temp_file_path)
+        # delete temporary md file
+        subprocess.run('rm ' + temp_file_path, shell=True)
     else:
-        temp_file_path = src_file_path
         translated_header_yaml_data = ""
-
-
-    # markdown to json
-    remark.mdToJson(temp_file_path)
+        # markdown to json
+        remark.mdToJson(src_file_path)
 
     # 検証用 json 1
     if debug:
         shutil.copyfile("output.json", "ast-from-md.json")
-
-    # delete temporary md file
-    subprocess.run('rm ' + temp_file_path, shell=True)
 
     # json 前処理 (語順対応のための置き換え)
     ast, lookup_table = processing.jsonProcessingBeforeTranslation()
@@ -94,9 +92,7 @@ def mutate_path(ctx, param, value):
               callback=mutate_path, type=click.Path(exists=True))
 @click.option('-r', '--recursive', is_flag=True, help='translate recursively for subdirectories', show_default=True)
 @click.option('--hugo', is_flag=True, help='translate with hugo front matter, which is metadata about hugo site', show_default=True)
-@click.option('--from', help='source language', default=const.LANG_EN, show_default=True,
-
-              type=click.Choice(const.LANGUAGE_LIST))
+@click.option('--from', 'from_', help='source language', default=const.LANG_EN, show_default=True, type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--to', help='post-translation language', default=const.LANG_JA, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--output', help='directory where you want to output the translated contents', default="./",
@@ -106,11 +102,8 @@ def run(path, recursive, hugo, from_, to, output, debug):
     is_hugo = hugo
 
     if path.endswith(".md"):
-        if (path.endswith("." + from_ + ".md") or (
-                    from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
-            translate_page(
-                re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path),
-                from_, to, is_hugo, output, debug)
+        if (path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
+            translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, is_hugo, output, debug)
 
     else:
         if recursive:
@@ -130,7 +123,5 @@ def run(path, recursive, hugo, from_, to, output, debug):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
                             re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, is_hugo, output, debug)
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, output, debug)
-
 if __name__ == '__main__':
     run()

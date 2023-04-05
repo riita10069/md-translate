@@ -3,6 +3,4 @@ md_translate.egg-info
 .idea
 .code
 __pycache__
-
-
-
+sample-*

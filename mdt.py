@@ -12,33 +12,33 @@ from modules import remark
 from modules import translate
 
 
-def get_dest_file_path(filename, src_lang, dest_lang, output):
+def get_dest_file_path(filename, from_, to, output):
     dest_file_path = ''
     output_directory = Path.resolve(Path(output))
     current_directory = Path.cwd()
 
     if output_directory == current_directory:
-        dest_file_path = Path.resolve(Path(filename + '.md' if dest_lang == const.LANG_EN else filename + '.' + dest_lang + '.md'))
+        dest_file_path = Path.resolve(Path(filename + '.md' if to == const.LANG_EN else filename + '.' + to + '.md'))
         dest_file_path = str(dest_file_path)
     else:
         md_file_name = Path(filename).name
-        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if src_lang == const.LANG_EN else md_file_name + '.' + src_lang + '.md')
+        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if to == const.LANG_EN else md_file_name + '.' + to + '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
 
-    if dest_file_path.endswith('.' + const.LANG_EN + '.' + dest_lang + '.md'):
+    if dest_file_path.endswith('.' + const.LANG_EN + '.' + to + '.md'):
         return dest_file_path.replace('.' + const.LANG_EN, '')
 
     return str(dest_file_path)
 
 
-def translate_page(filename, src_lang, dest_lang, output, debug):
-    src_file_path = filename + '.md' if src_lang == const.LANG_EN else filename + '.' + src_lang + '.md'
+def translate_page(filename, from_, to, output, debug):
+    src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
     temp_file_path = filename + '.temp.md'
-    dest_file_path = get_dest_file_path(filename, src_lang, dest_lang, output)
+    dest_file_path = get_dest_file_path(filename, from_, to, output)
 
     # md 前処理 (hugo header の分離と翻訳)
     translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
-        src_file_path, temp_file_path, src_lang, dest_lang)
+        src_file_path, temp_file_path, from_, to)
 
     # markdown to json
     remark.mdToJson(temp_file_path)
@@ -59,7 +59,7 @@ def translate_page(filename, src_lang, dest_lang, output, debug):
             json.dump(ast, file, ensure_ascii=False, indent=2)
 
     # translate AST
-    translated_ast = translate.translateAst(ast, src_lang, dest_lang)
+    translated_ast = translate.translateAst(ast, from_, to)
 
     # recreate output.json
     with open('output.json', mode='wt', encoding='utf-8') as file:
@@ -74,7 +74,7 @@ def translate_page(filename, src_lang, dest_lang, output, debug):
 
     # md 後処理 (hugo header と 翻訳済み md file のマージ)
     processing.mdProcessingAfterTranslation(
-        dest_file_path, src_lang, dest_lang, translated_header_yaml_data, lookup_table)
+        dest_file_path, from_, to, translated_header_yaml_data, lookup_table)
 
     os.remove("output.json")
 
@@ -82,43 +82,42 @@ def translate_page(filename, src_lang, dest_lang, output, debug):
 def mutate_path(ctx, param, value):
     return "./" + value
 
-
 @click.command()
 @click.option('--path', help='directory or file path where you want to translate', required=True,
               callback=mutate_path, type=click.Path(exists=True))
 @click.option('-r', '--recursive', is_flag=True, help='translate recursively for subdirectories', show_default=True)
-@click.option('--src-lang', help='source language', default=const.LANG_EN, show_default=True,
+@click.option('--from', 'from_', help='source language', default=const.LANG_EN, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
-@click.option('--dest-lang', help='post-translation language', default=const.LANG_JA, show_default=True,
+@click.option('--to', help='post-translation language', default=const.LANG_JA, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--output', help='directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='output some ast files for debug', show_default=True)
-def run(path, recursive, src_lang, dest_lang, output, debug):
+def run(path, recursive, from_, to, output, debug):
     if path.endswith(".md"):
-        if (path.endswith("." + src_lang + ".md") or (
-                    src_lang == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
+        if (path.endswith("." + from_ + ".md") or (
+                    from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
             translate_page(
-                re.sub('\.md$', '', path) if src_lang == const.LANG_EN else re.sub('\.' + src_lang + '.md', '', path),
-                src_lang, dest_lang, output, debug)
+                re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path),
+                from_, to, output, debug)
     else:
         if recursive:
             for current_dir, dirs, files in os.walk(path):
                 for filename in files:
-                    if (filename.endswith("." + src_lang + ".md") or (
-                            src_lang == const.LANG_EN and "." not in filename.rstrip(".md"))):
+                    if (filename.endswith("." + from_ + ".md") or (
+                            from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
                         click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if src_lang == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), src_lang, dest_lang, output, debug)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, output, debug)
 
         else:
             for filename in os.listdir(path):
                 if os.path.isfile(os.path.join(path, filename)):
-                    if (filename.endswith("." + src_lang + ".md") or (
-                            src_lang == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
+                    if (filename.endswith("." + from_ + ".md") or (
+                            from_ == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if src_lang == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), src_lang, dest_lang, output, debug)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, output, debug)
 
 if __name__ == '__main__':
     run()

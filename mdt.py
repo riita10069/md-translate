@@ -32,13 +32,13 @@ def get_dest_file_path(filename, from_, to, output):
 
 
 def translate_page(filename, from_, to, output, debug):
-    from__file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
+    src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
     temp_file_path = filename + '.temp.md'
     dest_file_path = get_dest_file_path(filename, from_, to, output)
 
     # md 前処理 (hugo header の分離と翻訳)
     translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
-        from__file_path, temp_file_path, from_, to)
+        src_file_path, temp_file_path, from_, to)
 
     # markdown to json
     remark.mdToJson(temp_file_path)

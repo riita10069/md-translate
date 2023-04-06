@@ -1,6 +1,10 @@
-# md-translate (Markdown Translation Tool)
+# Workshop Translator (Markdown Translation Tool)
 
 A CLI tool for translating documents written in markdown.
+
+By default this translator regard input file as **including hugo yaml header**.
+
+For markdown only translation, use `--no-hugo` option.
 
 ## Python version requirements
 python 3.6 ~ 

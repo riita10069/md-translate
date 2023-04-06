@@ -39,6 +39,9 @@ User can use `--output` option to decide output folder (the folder need to exist
 For more information see : `mdt --help`
 For command examples see [example](./docs/example.md)
 
+For markdown file without hugo header add `--no-hugo` flag.
+Is `--hugo` or nither `--hugo/--no-hugo` flag exist, then this tool regard inputs contain hugo header in .md file.
+
 ### OPTIONS
 
 ```
@@ -46,7 +49,11 @@ Options:
   --path PATH                     directory or file path where you want to
                                   translate  [required]
   -r, --recursive                 translate recursively for subdirectories
+
+  --hugo                          translate with hugo front matter, which is
+                                  metadata about hugo site
   --from [af|sq|am|ar|hy|az|bn|bs|bg|ca|zh|zh-TW|hr|cs|da|fa-AF|nl|en|et|fa|tl|fi|fr|fr-CA|ka|de|el|gu|ht|ha|he|hi|hu|is|id|ga|it|ja|kn|kk|ko|lv|lt|mk|ms|ml|mt|mr|mn|no|ps|pl|pt|pt-PT|pa|ro|ru|sr|si|sk|sl|so|es|es-MX|sw|sv|ta|te|th|tr|uk|ur|uz|vi|cy]
+
                                   source language  [default: en]
   --to [af|sq|am|ar|hy|az|bn|bs|bg|ca|zh|zh-TW|hr|cs|da|fa-AF|nl|en|et|fa|tl|fi|fr|fr-CA|ka|de|el|gu|ht|ha|he|hi|hu|is|id|ga|it|ja|kn|kk|ko|lv|lt|mk|ms|ml|mt|mr|mn|no|ps|pl|pt|pt-PT|pa|ro|ru|sr|si|sk|sl|so|es|es-MX|sw|sv|ta|te|th|tr|uk|ur|uz|vi|cy]
                                   post-translation language  [default: ja]

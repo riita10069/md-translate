@@ -91,7 +91,7 @@ def mutate_path(ctx, param, value):
 @click.option('--path', help='directory or file path where you want to translate', required=True,
               callback=mutate_path, type=click.Path(exists=True))
 @click.option('-r', '--recursive', is_flag=True, help='translate recursively for subdirectories', show_default=True)
-@click.option('--hugo', is_flag=True, help='translate with hugo front matter, which is metadata about hugo site', show_default=True)
+@click.option('--hugo/--no-hugo',  default=True, help='translate with hugo front matter, which is metadata about hugo site', show_default=True)
 @click.option('--from', 'from_', help='source language', default=const.LANG_EN, show_default=True, type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--to', help='post-translation language', default=const.LANG_JA, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))

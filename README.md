@@ -2,7 +2,7 @@
 
 A CLI tool for translating documents written in markdown.
 
-By default this translator regard input file as **including hugo yaml header**.
+By default this translator regard input file as **including hugo front matter**.
 
 For markdown only translation, use `--no-hugo` option.
 

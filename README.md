@@ -27,7 +27,7 @@ $ pip3 install git+https://github.com/riita10069/md-translate.git
 ## Usage
 
 ```
-$ mdt --path index.md --hugo
+$ mdt --path index.md
 ```
 
 This command line tool minumum requires `--path` or `-r --path` options to designate a file or folder as the translation targate.
@@ -38,6 +38,9 @@ User can use `--output` option to decide output folder (the folder need to exist
 
 For more information see : `mdt --help`
 For command examples see [example](./docs/example.md)
+
+For markdown file without hugo header add `--no-hugo` flag.
+Is `--hugo` or nither `--hugo/--no-hugo` flag exist, then this tool regard inputs contain hugo header in .md file.
 
 ### OPTIONS
 

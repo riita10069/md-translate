@@ -19,8 +19,8 @@ $ npm install -g remark-cli
 $ npm install -g remark-directive
 ```
 
-> **Note**
-> Make sure to allow the `translate:TranslateText` action
+> **Note**  
+> Make sure to allow the `translate:TranslateText` action  
 > And you have to specify an aws default region.
 
 ## Instalation
@@ -46,8 +46,7 @@ User can use `--output` option to decide output folder (the folder need to exist
 For markdown file without hugo header add `--no-hugo` flag.
 Is `--hugo` or nither `--hugo/--no-hugo` flag exist, then this tool regard inputs contain hugo header in .md file.
 
-For more information see : `mdt --help`
-
+For more information see : `mdt --help`  
 For command examples see [example](./docs/example.md)
 
 ### OPTIONS

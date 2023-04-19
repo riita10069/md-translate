@@ -123,7 +123,7 @@ def dfs(ast, lookup_table):
             dfs(node, lookup_table)
 
 
-def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deepl):
+def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deepl_free, deepl_pro):
     md_file = open(src_file, 'r+')
     md_file_lines = md_file.readlines()
     md_file.close()
@@ -146,11 +146,11 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
     # translate hugo header
     if const.HUGO_HEADER_TITLE in header_yaml_data.keys():
         header_yaml_data[const.HUGO_HEADER_TITLE] = translate.translate(header_yaml_data[const.HUGO_HEADER_TITLE],
-                                                                        src_lang, dest_lang, deepl)
+                                                                        src_lang, dest_lang, deepl_free, deepl_pro)
     if const.HUGO_HEADER_TAGS in header_yaml_data.keys() and isinstance(header_yaml_data[const.HUGO_HEADER_TAGS], list):
         new_tags = []
         for tag in header_yaml_data[const.HUGO_HEADER_TAGS]:
-            new_tags.append(translate.translate(tag, src_lang, dest_lang, deepl))
+            new_tags.append(translate.translate(tag, src_lang, dest_lang, deepl_free, deepl_pro))
         header_yaml_data[const.HUGO_HEADER_TAGS] = new_tags
 
     # create .temp.md file with only original .md content
@@ -183,11 +183,11 @@ def make_inlinecode(content):
     return "`" + content + "`"
 
 
-def make_link(content, url, src_lang, dest_lang, deepl):
-    return "[" + translate.translate(content, src_lang, dest_lang, deepl) + "]" + "(" + url + ")"
+def make_link(content, url, src_lang, dest_lang, deepl_free, deepl_pro):
+    return "[" + translate.translate(content, src_lang, dest_lang, deepl_free, deepl_pro) + "]" + "(" + url + ")"
 
 
-def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl, translated_header_yaml_data, lookup_table):
+def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free, deepl_pro, translated_header_yaml_data, lookup_table):
     # add translated hugo header
     dest_md_file = open(dest_file_path, 'r')
     translated_md_content_lines = dest_md_file.readlines()
@@ -213,7 +213,7 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl, tra
                     elif leaf_type == const.TYPE_EMPHASIS:
                         attribute = make_emphasis(leaf_data["leaf_value"])
                     elif leaf_type == const.TYPE_LINK:
-                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], src_lang, dest_lang, deepl)
+                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], src_lang, dest_lang, deepl_free, deepl_pro)
                     processed_line = processed_line.replace(id, attribute)
 
         if "&#x20;" in line:

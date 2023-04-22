@@ -1,0 +1,17 @@
+image: python:3.9.16
+
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+  - pip install -e .
+
+test:
+  stage: test
+  script:
+    - mdt --path README.md
+    - mdt --path docs

@@ -2,5 +2,7 @@ build
 md_translate.egg-info
 .idea
 .code
+.DS_Store
 __pycache__
 sample-*
+mdt.egg-info

@@ -62,9 +62,8 @@ Options:
                                   Source language  [default: en]
   --to [bg|cs|da|de|el|en|es|et|fi|fr|hu|id|it|ja|ko|lt|lv|nb|nl|pl|pt|ro|ru|sk|sl|sv|tr|uk|zh]
                                   Target language  [default: ja]
-  --deepl                         Translate with DeepL. To use this option,
-                                  you need to set the API key of DeepL to the
-                                  environment variable "DEEPL_API_KEY".
+  --deepl-free                    Translate with DeepL API Free. Environment variable "DEEPL_API_KEY" must be set.
+  --deepl-pro                     Translate with DeepL API Pro. Environment variable "DEEPL_API_KEY" must be set.
   --output PATH                   Directory where you want to output the
                                   translated contents  [default: ./]
   --debug                         Output some ast files for debug.

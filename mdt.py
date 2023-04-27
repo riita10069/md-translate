@@ -18,11 +18,12 @@ def get_dest_file_path(filename, from_, to, output):
     current_directory = Path.cwd()
 
     if output_directory == current_directory:
-        dest_file_path = Path.resolve(Path(filename + '.md' if to == const.LANG_EN else filename + '.' + to + '.md'))
+        print()
+        dest_file_path = Path.resolve(Path(filename + '.md' if to == const.LANG_EN else filename.rsplit('.',1)[0] + '.' + to + '.md'))
         dest_file_path = str(dest_file_path)
     else:
-        md_file_name = Path(filename).name
-        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if to == const.LANG_EN else md_file_name + '.md')
+        md_file_name = Path(filename).name  
+        dest_file_path = os.path.join(output_directory, md_file_name + '.md' if to == const.LANG_EN else md_file_name.rsplit('.',1)[0] + '.' + to +  '.md')
         dest_file_path = re.sub(r"^./|/(\./)+", "/", dest_file_path)
 
     if dest_file_path.endswith('.' + const.LANG_EN + '.' + to + '.md'):
@@ -32,20 +33,20 @@ def get_dest_file_path(filename, from_, to, output):
 
 
 def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, debug):
-    src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
-
+    src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.md'
     temp_file_path = filename + '.temp.md'
     dest_file_path = get_dest_file_path(filename, from_, to, output)
-
     # md 前処理 (hugo header の分離と翻訳)
     translated_header_yaml_data = ""
     if is_hugo:
-        translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
-            src_file_path, temp_file_path, from_, to, deepl_free, deepl_pro)
-        # markdown to json
-        remark.mdToJson(temp_file_path)
-        # delete temporary md file
-        subprocess.run('rm ' + temp_file_path, shell=True)
+        try:
+            translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
+                src_file_path, temp_file_path, from_, to, deepl_free, deepl_pro)
+            # markdown to json
+            remark.mdToJson(temp_file_path)
+        finally:
+            # delete temporary md file
+            subprocess.run('rm ' + temp_file_path, shell=True)
     else:
         translated_header_yaml_data = ""
         # markdown to json

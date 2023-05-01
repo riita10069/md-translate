@@ -45,7 +45,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
         # markdown to json
         remark.mdToJson(temp_file_path)
         # delete temporary md file
-        subprocess.run('rm ' + temp_file_path, shell=True)
+        subprocess.run(f'rm "{temp_file_path}"', shell=True)
     else:
         translated_header_yaml_data = ""
         # markdown to json
@@ -115,7 +115,7 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug):
                             from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
                         click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
 
         else:
             for filename in os.listdir(path):
@@ -124,6 +124,6 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug):
                             from_ == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.md$', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
+                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
 if __name__ == '__main__':
     run()

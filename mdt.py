@@ -47,7 +47,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
             remark.mdToJson(temp_file_path)
         finally:
             # delete temporary md file
-            subprocess.run('rm ' + temp_file_path, shell=True)
+            subprocess.run(f'rm "{temp_file_path}"', shell=True)
     else:
         translated_header_yaml_data = ""
         # markdown to json

@@ -5,4 +5,5 @@ md_translate.egg-info
 .DS_Store
 __pycache__
 sample-*
+test_dir
 mdt.egg-info

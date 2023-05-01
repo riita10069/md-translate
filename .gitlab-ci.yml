@@ -3,6 +3,7 @@ image: nikolaik/python-nodejs:python3.11-nodejs20
 
 stages:
   - build
+  - test
 
 build:
   stage: build
@@ -10,4 +11,8 @@ build:
   - pip install -e .
   - npm install -g remark-cli
   - npm install -g remark-directive
-  - mdt --path README.md --no-hugo
+
+test:
+  stage: test
+  script:
+  - pytest -v -s .

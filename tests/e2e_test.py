@@ -12,11 +12,11 @@ CASE_PATH = f'{TEST_PATH}/case_dir'
 @pytest.fixture
 def e2e_test(scope='session'):
     # Remove test directory and files
-    if os.path.isdir(TEST_DIR):
-        shutil.rmtree(TEST_DIR)
+    if os.path.isdir(TEST_PATH):
+        shutil.rmtree(TEST_PATH)
 
     # Create test directory and files
-    os.makedirs(TEST_DIR)
+    os.makedirs(TEST_PATH)
     os.makedirs(SAMPLE_PATH)
     os.makedirs(NESTED_PATH)
     os.makedirs(OUTPUT_PATH)

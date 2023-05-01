@@ -38,7 +38,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
     dest_file_path = get_dest_file_path(filename, from_, to, output)
 
     # md 前処理 (hugo header の分離と翻訳)
-    translated_heade
+    translated_header_yaml_data = ""
     if is_hugo:
         try:
             translated_header_yaml_data = processing.mdProcessingBeforeTranslation(

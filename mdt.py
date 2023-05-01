@@ -40,12 +40,14 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
     # md 前処理 (hugo header の分離と翻訳)
     translated_header_yaml_data = ""
     if is_hugo:
-        translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
-            src_file_path, temp_file_path, from_, to, deepl_free, deepl_pro)
-        # markdown to json
-        remark.mdToJson(temp_file_path)
-        # delete temporary md file
-        subprocess.run(f'rm "{temp_file_path}"', shell=True)
+        try:
+            translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
+                src_file_path, temp_file_path, from_, to, deepl_free, deepl_pro)
+            # markdown to json
+            remark.mdToJson(temp_file_path)
+        finally:
+            # delete temporary md file
+            subprocess.run('rm ' + temp_file_path, shell=True)
     else:
         translated_header_yaml_data = ""
         # markdown to json

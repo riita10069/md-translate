@@ -10,4 +10,4 @@ build:
   - pip install -e .
   - npm install -g remark-cli
   - npm install -g remark-directive
-  - mdt --path README.md --no-hugo
+  - pytest -v -s .

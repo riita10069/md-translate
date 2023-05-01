@@ -6,3 +6,4 @@ md_translate.egg-info
 __pycache__
 sample-*
 mdt.egg-info
+output

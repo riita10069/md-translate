@@ -8,3 +8,4 @@ sample-*
 test_dir
 mdt.egg-info
 output
+venv

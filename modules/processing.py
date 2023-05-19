@@ -124,7 +124,7 @@ def dfs(ast, lookup_table):
 
 
 def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deepl_free, deepl_pro):
-    md_file = open(src_file, 'r+')
+    md_file = open(src_file, 'r+', encoding='utf-8')
     md_file_lines = md_file.readlines()
     md_file.close()
 
@@ -154,7 +154,7 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
         header_yaml_data[const.HUGO_HEADER_TAGS] = new_tags
 
     # create .temp.md file with only original .md content
-    md_content_file = open(temp_file, 'x')
+    md_content_file = open(temp_file, 'x', encoding='utf-8')
     md_content_file.write(md_content)
     md_content_file.flush()
     md_content_file.close()
@@ -164,7 +164,7 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
 
 def jsonProcessingBeforeTranslation():
     lookup_table = {"current_alphabet": '', "ids": []}
-    json_open = open('output.json', 'r')
+    json_open = open('output.json', 'r', encoding='utf-8')
     ast = json.load(json_open)
     dfs(ast, lookup_table)
 
@@ -189,7 +189,7 @@ def make_link(content, url, src_lang, dest_lang, deepl_free, deepl_pro):
 
 def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free, deepl_pro, translated_header_yaml_data, lookup_table):
     # add translated hugo header
-    dest_md_file = open(dest_file_path, 'r')
+    dest_md_file = open(dest_file_path, 'r', encoding='utf-8')
     translated_md_content_lines = dest_md_file.readlines()
 
     dest_md_file.close()
@@ -232,7 +232,7 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free
         processed_md_body += processed_line
 
     # merge translated hugo header and processed_md_body
-    dest_file = open(dest_file_path, 'w+')
+    dest_file = open(dest_file_path, 'w+', encoding='utf-8')
     contents = const.HUGO_HEADER_DELIMITER + yaml.dump(
         translated_header_yaml_data,
         allow_unicode=True) + const.HUGO_HEADER_DELIMITER + "\n" + processed_md_body

@@ -22,5 +22,6 @@ TYPE_EMPHASIS: str = 'emphasis'
 TYPE_INLINE_CODE: str = 'inlineCode'
 TYPE_LINK: str = 'link'
 TYPE_CODE: str = 'code'
+TYPE_HTML: str = 'html'
 
 LANGUAGE_LIST = ['bg', 'cs', 'da', 'de', 'el', 'en', 'es', 'et', 'fi', 'fr', 'hu', 'id', 'it', 'ja', 'ko', 'lt', 'lv', 'nb', 'nl', 'pl', 'pt', 'ro', 'ru', 'sk', 'sl', 'sv', 'tr', 'uk', 'zh']

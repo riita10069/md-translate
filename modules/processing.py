@@ -45,13 +45,13 @@ def merge(before, lookup_table):
 
     after = []
     for leaf in before:
-        if leaf[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK]:
+        if leaf[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK, const.TYPE_HTML]:
 
             id = "http://no-translate-" + next_alphabet(lookup_table['current_alphabet']) + ".dev"
             lookup_table['current_alphabet'] = next_alphabet(lookup_table['current_alphabet'])
             lookup_table["ids"].append(id)
 
-            if leaf[const.TYPE_TYPE] == const.TYPE_INLINE_CODE:
+            if leaf[const.TYPE_TYPE] in [const.TYPE_INLINE_CODE, const.TYPE_HTML]:
                 lookup_table[id] = {
                     "leaf_types": [leaf[const.TYPE_TYPE]],
                     "leaf_value": leaf[const.VALUE_TYPE]
@@ -108,7 +108,7 @@ def dfs(ast, lookup_table):
     if isinstance(root, list):
         for node in root:
             if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE,
-                                         const.TYPE_LINK]:
+                                         const.TYPE_LINK, const.TYPE_HTML]:
                 new_node, _ = merge(root, lookup_table)
                 ast[const.CHILDREN_TYPE] = new_node
                 break
@@ -116,7 +116,7 @@ def dfs(ast, lookup_table):
                 dfs(node, lookup_table)
     elif isinstance(root, dict):
         node = root
-        if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK]:
+        if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK, const.TYPE_HTML]:
             new_node, _ = merge([root], lookup_table)
             ast[const.CHILDREN_TYPE] = new_node
         if const.CHILDREN_TYPE in node:
@@ -214,6 +214,8 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free
                         attribute = make_emphasis(leaf_data["leaf_value"])
                     elif leaf_type == const.TYPE_LINK:
                         attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], src_lang, dest_lang, deepl_free, deepl_pro)
+                    elif leaf_type == const.TYPE_HTML:
+                        attribute = leaf_data["leaf_value"]
                     processed_line = processed_line.replace(id, attribute)
 
         if "&#x20;" in line:

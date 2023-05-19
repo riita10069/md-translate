@@ -10,7 +10,7 @@ OUTPUT_PATH = f'{TEST_PATH}/output_dir'
 CASE_PATH = f'{TEST_PATH}/case_dir'
 
 @pytest.fixture
-def e2e_test(scope='session'):
+def e2e_test(scope='module'):
     # Remove test directory and files
     if os.path.isdir(TEST_PATH):
         shutil.rmtree(TEST_PATH)

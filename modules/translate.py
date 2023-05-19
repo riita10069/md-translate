@@ -78,7 +78,7 @@ def translateAst(ast, src_lang, dest_lang, deepl_free, deepl_pro):
 
 
 def translateNode(node, src_lang, dest_lang, deepl_free, deepl_pro):
-    if node[const.TYPE_TYPE] in [const.TYPE_CODE, const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE]:
+    if node[const.TYPE_TYPE] in [const.TYPE_CODE, const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_HTML]:
         pass
     else:
         if const.VALUE_TYPE in node.keys():

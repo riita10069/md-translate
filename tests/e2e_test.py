@@ -22,7 +22,7 @@ def e2e_test(scope='session'):
     os.makedirs(OUTPUT_PATH)
     os.makedirs(CASE_PATH)
 
-    with open(f'{SAMPLE_PATH}/sample1.md', 'w') as f:
+    with open(f'{SAMPLE_PATH}/sample1.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: sample1
@@ -31,7 +31,7 @@ weight: 1
 
 Hello, world!
 ''')
-    with open(f'{SAMPLE_PATH}/sample2.en.md', 'w') as f:
+    with open(f'{SAMPLE_PATH}/sample2.en.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: sample2
@@ -40,7 +40,7 @@ weight: 2
 
 Hello, world!
 ''')
-    with open(f'{SAMPLE_PATH}/sample3.ja.md', 'w') as f:
+    with open(f'{SAMPLE_PATH}/sample3.ja.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: サンプル3
@@ -49,7 +49,7 @@ weight: 3
 
 こんにちは、世界!
 ''')
-    with open(f'{NESTED_PATH}/sample4.md', 'w') as f:
+    with open(f'{NESTED_PATH}/sample4.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: sample4
@@ -58,7 +58,7 @@ weight: 4
 
 Hello, world!
 ''')
-    with open(f'{NESTED_PATH}/sample5.ja.md', 'w') as f:
+    with open(f'{NESTED_PATH}/sample5.ja.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: サンプル5
@@ -68,7 +68,7 @@ weight: 5
 こんにちは、世界!
 ''')
 
-    with open(f'{CASE_PATH}/filename with space.md', 'w') as f:
+    with open(f'{CASE_PATH}/filename with space.md', 'w', encoding='utf-8') as f:
         f.write('''---
 chapter: true
 title: filename with space

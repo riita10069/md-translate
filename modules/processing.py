@@ -135,11 +135,10 @@ def html_merge(before, lookup_table):
                 for emphasis_children in node[const.CHILDREN_TYPE]:
                     if emphasis_children[const.TYPE_TYPE] in [const.TYPE_TEXT]:
                         html_text += make_emphasis(emphasis_children[const.VALUE_TYPE])
-            if node[const.TYPE_TYPE] in [const.TYPE_TEXT, const.TYPE_HTML, const.TYPE_INLINE_CODE]:
-                if node[const.TYPE_TYPE] in [const.TYPE_TEXT, const.TYPE_HTML]:
-                    html_text += node[const.VALUE_TYPE]
-                elif node[const.TYPE_TYPE] in [const.TYPE_INLINE_CODE]:
-                    html_text += make_inlinecode(node[const.VALUE_TYPE])
+            if node[const.TYPE_TYPE] in [const.TYPE_TEXT, const.TYPE_HTML]:
+                html_text += node[const.VALUE_TYPE]
+            if node[const.TYPE_TYPE] in [const.TYPE_INLINE_CODE]:
+                html_text += make_inlinecode(node[const.VALUE_TYPE])
 
         if node[const.TYPE_TYPE] == const.TYPE_HTML:
             tag_type = distinguish_html_tag(node[const.VALUE_TYPE])
@@ -208,6 +207,13 @@ def html_dfs(ast, lookup_table):
             if node[const.TYPE_TYPE] == const.TYPE_HTML:
                 new_node, _ = html_merge(root, lookup_table)
                 ast[const.CHILDREN_TYPE] = new_node
+    elif isinstance(root, dict):
+        node = root
+        if const.CHILDREN_TYPE in node:
+            html_dfs(node, lookup_table)
+        if node[const.TYPE_TYPE] == const.TYPE_HTML:
+            new_node, _ = html_merge(root, lookup_table)
+            ast[const.CHILDREN_TYPE] = new_node
 
 
 def dfs(ast, lookup_table):

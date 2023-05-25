@@ -108,7 +108,7 @@ def dfs(ast, lookup_table):
     if isinstance(root, list):
         for node in root:
             if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE,
-                                         const.TYPE_LINK, const.TYPE_HTML]:
+                                         const.TYPE_LINK]:
                 new_node, _ = merge(root, lookup_table)
                 ast[const.CHILDREN_TYPE] = new_node
                 break
@@ -116,7 +116,7 @@ def dfs(ast, lookup_table):
                 dfs(node, lookup_table)
     elif isinstance(root, dict):
         node = root
-        if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK, const.TYPE_HTML]:
+        if node[const.TYPE_TYPE] in [const.TYPE_STRONG, const.TYPE_EMPHASIS, const.TYPE_INLINE_CODE, const.TYPE_LINK]:
             new_node, _ = merge([root], lookup_table)
             ast[const.CHILDREN_TYPE] = new_node
         if const.CHILDREN_TYPE in node:

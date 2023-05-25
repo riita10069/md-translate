@@ -93,7 +93,7 @@ def merge(before, lookup_table):
                     "position": before[0][const.POSITION_TYPE]
                 })
                 ret = ""
-                after.append(leaf)
+            after.append(leaf)
 
     if ret != "":
         after.append({

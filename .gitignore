@@ -10,3 +10,7 @@ mdt.egg-info
 output
 venv
 ast*.json
+gitignore/
+node_modules/
+package-lock.json
+package.json

@@ -181,13 +181,6 @@ def html_merge(before, lookup_table):
                 })
 
         elif not is_in_html:
-            if html_text != "":
-                after.append({
-                    "type": const.TYPE_TEXT,
-                    "value": html_text,
-                    "position": before[0][const.POSITION_TYPE]
-                })
-                html_text = ""
             after.append(node)
 
     if html_text != "":

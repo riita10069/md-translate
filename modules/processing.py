@@ -135,7 +135,7 @@ def html_merge(before, lookup_table):
                 for emphasis_children in node[const.CHILDREN_TYPE]:
                     if emphasis_children[const.TYPE_TYPE] in [const.TYPE_TEXT]:
                         html_text += make_emphasis(emphasis_children[const.VALUE_TYPE])
-            if node[const.TYPE_TYPE] in [const.TYPE_TEXT, const.TYPE_HTML]:
+            if node[const.TYPE_TYPE] in [const.TYPE_TEXT]:
                 html_text += node[const.VALUE_TYPE]
             if node[const.TYPE_TYPE] in [const.TYPE_INLINE_CODE]:
                 html_text += make_inlinecode(node[const.VALUE_TYPE])
@@ -147,6 +147,7 @@ def html_merge(before, lookup_table):
                 is_in_html = True
                 html_text += node[const.VALUE_TYPE]
             elif tag_type == const.HTML_TAG_TYPE_CLOSING_TAG:
+                html_text += node[const.VALUE_TYPE]
                 beginning_tags.pop()
                 if len(beginning_tags) == 0:
                     id = "http://no-translate-" + next_alphabet(lookup_table['current_alphabet']) + ".dev"

@@ -145,7 +145,7 @@ def html_merge(before, lookup_table):
             if tag_type == const.HTML_TAG_TYPE_BEGINNING_TAG:
                 beginning_tags.append(node)
                 is_in_html = True
-                html_text = node[const.VALUE_TYPE]
+                html_text += node[const.VALUE_TYPE]
             elif tag_type == const.HTML_TAG_TYPE_CLOSING_TAG:
                 beginning_tags.pop()
                 if len(beginning_tags) == 0:

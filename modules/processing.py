@@ -183,6 +183,9 @@ def html_merge(before, lookup_table):
         elif not is_in_html:
             after.append(node)
 
+    # <i class=\"far fa-eye\" style=\"color:#262262\"></i>, etc. may be mapped to a single Node as a whole.
+    # The specification changes depending on whether it belongs to Paragraph or not. In that
+    # case, this part is important because it is solved by stepping here.
     if html_text != "":
         after.append({
             "type": const.TYPE_HTML,

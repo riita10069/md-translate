@@ -185,7 +185,7 @@ def html_merge(before, lookup_table):
 
     if html_text != "":
         after.append({
-            "type": const.TYPE_TEXT,
+            "type": const.TYPE_HTML,
             "value": html_text
         })
     return after, html_text

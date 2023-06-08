@@ -46,7 +46,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
     if is_hugo:
         try:
             translated_header_yaml_data = processing.mdProcessingBeforeTranslation(
-                src_file_path, temp_file_path, from_, to, deepl_free, deepl_pro)
+                src_file_path, temp_file_path, translator)
             # markdown to json
             remark.mdToJson(temp_file_path)
         finally:

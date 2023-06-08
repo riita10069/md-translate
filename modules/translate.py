@@ -51,7 +51,7 @@ class Translator:
     def translate(self, text):
         # 辞書利用がない場合は、特に処理なし。
         if self.dictionary_path == "":
-            return self.translate_text(self, text)
+            return self.translate_text(text)
 
         # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
         sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.", r"\1#PERIOD#",

@@ -236,7 +236,7 @@ def dfs(ast, lookup_table):
             dfs(node, lookup_table)
 
 
-def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deepl_free, deepl_pro):
+def mdProcessingBeforeTranslation(src_file, temp_file, translator):
     md_file = open(src_file, 'r+', encoding='utf-8')
     md_file_lines = md_file.readlines()
     md_file.close()
@@ -258,12 +258,11 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
 
     # translate hugo header
     if const.HUGO_HEADER_TITLE in header_yaml_data.keys():
-        header_yaml_data[const.HUGO_HEADER_TITLE] = translate.translate(header_yaml_data[const.HUGO_HEADER_TITLE],
-                                                                        src_lang, dest_lang, deepl_free, deepl_pro)
+        header_yaml_data[const.HUGO_HEADER_TITLE] = translator.translate(header_yaml_data[const.HUGO_HEADER_TITLE])
     if const.HUGO_HEADER_TAGS in header_yaml_data.keys() and isinstance(header_yaml_data[const.HUGO_HEADER_TAGS], list):
         new_tags = []
         for tag in header_yaml_data[const.HUGO_HEADER_TAGS]:
-            new_tags.append(translate.translate(tag, src_lang, dest_lang, deepl_free, deepl_pro))
+            new_tags.append(translator.translate(tag))
         header_yaml_data[const.HUGO_HEADER_TAGS] = new_tags
 
     # create .temp.md file with only original .md content
@@ -275,14 +274,13 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
     return header_yaml_data
 
 
-def jsonProcessingBeforeTranslation():
-    lookup_table = {"current_alphabet": '', "ids": []}
+def jsonProcessingBeforeTranslation(lookup_table):
     json_open = open('output.json', 'r', encoding='utf-8')
     ast = json.load(json_open)
     html_dfs(ast, lookup_table)
     dfs(ast, lookup_table)
 
-    return ast, lookup_table
+    return ast
 
 
 def make_strong(content):
@@ -297,12 +295,12 @@ def make_inlinecode(content):
     return "`" + content + "`"
 
 
-def make_link(content, url, src_lang, dest_lang, deepl_free, deepl_pro):
-    return "[" + translate.translate(content, src_lang, dest_lang, deepl_free, deepl_pro) + "]" + "(" + url + ")"
+def make_link(content, url, translator):
+    return "[" + translator.translate(content) + "]" + "(" + url + ")"
 
 
-def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free, deepl_pro,
-                                 translated_header_yaml_data, lookup_table):
+def mdProcessingAfterTranslation(dest_file_path,
+                                 translated_header_yaml_data, lookup_table, translator):
     # add translated hugo header
     dest_md_file = open(dest_file_path, 'r', encoding='utf-8')
     translated_md_content_lines = dest_md_file.readlines()
@@ -328,8 +326,7 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free
                     elif leaf_type == const.TYPE_EMPHASIS:
                         attribute = make_emphasis(leaf_data["leaf_value"])
                     elif leaf_type == const.TYPE_LINK:
-                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], src_lang, dest_lang,
-                                              deepl_free, deepl_pro)
+                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
                     elif leaf_type == const.TYPE_HTML:
                         attribute = leaf_data["leaf_value"]
                     processed_line = processed_line.replace(id, attribute)

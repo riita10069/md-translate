@@ -31,11 +31,15 @@ def get_dest_file_path(filename, from_, to, output):
     return str(dest_file_path)
 
 
-def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, debug):
+def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path):
     src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
 
     temp_file_path = filename + '.temp.md'
     dest_file_path = get_dest_file_path(filename, from_, to, output)
+
+    lookup_table = {"current_alphabet": '', "ids": []}
+    # 辞書の読み込み
+    translator = translate.Translator(dictionary_path, from_, to, deepl_free, deepl_pro, lookup_table)
 
     # md 前処理 (hugo header の分離と翻訳)
     translated_header_yaml_data = ""
@@ -58,7 +62,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
         shutil.copyfile("output.json", "ast-from-md.json")
 
     # json 前処理 (語順対応のための置き換え)
-    ast, lookup_table = processing.jsonProcessingBeforeTranslation()
+    ast = processing.jsonProcessingBeforeTranslation(lookup_table)
 
     # 検証用 json 2
     if debug:
@@ -66,7 +70,7 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
             json.dump(ast, file, ensure_ascii=False, indent=2)
 
     # translate AST
-    translated_ast = translate.translateAst(ast, from_, to, deepl_free, deepl_pro)
+    translated_ast = translator.translateAst(ast)
 
     # recreate output.json
     with open('output.json', mode='wt', encoding='utf-8') as file:
@@ -81,10 +85,11 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
 
     # md 後処理 (hugo header と 翻訳済み md file のマージ)
     processing.mdProcessingAfterTranslation(
-        dest_file_path, from_, to, deepl_free, deepl_pro, translated_header_yaml_data, lookup_table)
+        dest_file_path, translated_header_yaml_data, lookup_table, translator)
 
     os.remove("output.json")
 
+    translator.save_dictionaries()
 
 def mutate_path(ctx, param, value):
     return "./" + value
@@ -102,12 +107,13 @@ def mutate_path(ctx, param, value):
 @click.option('--output', help='Directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
-def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug):
+@click.option('--dictionary-path', is_flag=True, default="", help='Dictionaries files directory', show_default=True)
+def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, dictionary_path):
     is_hugo = hugo
 
     if path.endswith(".md"):
         if (path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md"))):
-            translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
+            translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path)
 
     else:
         if recursive:
@@ -117,7 +123,7 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug):
                             from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
                         click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, translate_page)
 
         else:
             for filename in os.listdir(path):
@@ -126,6 +132,6 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug):
                             from_ == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug)
+                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path)
 if __name__ == '__main__':
     run()

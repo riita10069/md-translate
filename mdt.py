@@ -107,7 +107,7 @@ def mutate_path(ctx, param, value):
 @click.option('--output', help='Directory where you want to output the translated contents', default="./",
               show_default=True, type=click.Path(exists=True))
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
-@click.option('--dictionary-path', is_flag=True, default="", help='Dictionaries files directory', show_default=True)
+@click.option('--dictionary-path', default="", help='Dictionaries files directory', show_default=True)
 def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, dictionary_path):
     is_hugo = hugo
 

@@ -16,7 +16,7 @@ python 3.6 ~
 $ brew install awscli
 $ aws configure
 $ npm install -g remark-cli
-$ npm install -g remark-directive
+$ npm install remark-directive
 ```
 
 > **Note**  

@@ -83,16 +83,14 @@ There is a party today called Beer Bust.
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_ignore_words.json', 'w', encoding='utf-8') as f:
-        f.write('''---
-[
+        f.write('''[
   "They are externally aware",
   "Invent and Simplify"
 ]
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_custom_words.json', 'w', encoding='utf-8') as f:
-        f.write('''---
-{
+        f.write('''{
   "There is a party today called Beer Bust.": "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。"
 }
 ''')

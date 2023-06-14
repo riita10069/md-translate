@@ -350,9 +350,14 @@ def mdProcessingAfterTranslation(dest_file_path,
 
     # merge translated hugo header and processed_md_body
     dest_file = open(dest_file_path, 'w+', encoding='utf-8')
-    contents = const.HUGO_HEADER_DELIMITER + yaml.dump(
-        translated_header_yaml_data,
-        allow_unicode=True) + const.HUGO_HEADER_DELIMITER + "\n" + processed_md_body
+
+    contents = ""
+    if translated_header_yaml_data == "":
+        contents = processed_md_body
+    else:
+        contents = const.HUGO_HEADER_DELIMITER + yaml.dump(
+            translated_header_yaml_data,
+            allow_unicode=True) + const.HUGO_HEADER_DELIMITER + "\n" + processed_md_body
     dest_file.write(contents)
     dest_file.flush()
     dest_file.close()

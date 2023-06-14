@@ -14,8 +14,11 @@ def unit_test(scope='module'):
     if os.path.isdir(TEST_PATH):
         shutil.rmtree(TEST_PATH)
 
+    if os.path.isdir(DICTIONARY_PATH):
+        shutil.rmtree(DICTIONARY_PATH)
     # Create test directory and files
     os.makedirs(TEST_PATH)
+    os.makedirs(DICTIONARY_PATH)
 
     with open(f'{TEST_PATH}/sample1.md', 'w', encoding='utf-8') as f:
         f.write('''---

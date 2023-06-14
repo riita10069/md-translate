@@ -6,6 +6,7 @@ from mdt import translate_page
 from modules import const
 
 TEST_PATH = 'test_dir'
+DICTIONARY_PATH = 'dictionary'
 
 @pytest.fixture
 def unit_test(scope='module'):
@@ -56,6 +57,41 @@ weight: 6
 <div><i class="far fa-eye" style="color:#262262"></i> Navigate <a href="#lab_5_challenge_a" target="_self">**here**</a> for **a** solution.</div>
 ''')
 
+    with open(f'{TEST_PATH}/base_ignore_words.md', 'w', encoding='utf-8') as f:
+        f.write('''---
+chapter: true
+title: base ignore words
+weight: 7
+---
+
+Invent and Simplify
+Leaders expect and require innovation and invention from their teams and always find ways to simplify. They are externally aware, look for new ideas from everywhere, and are not limited by “not invented here.” As we do new things, we accept that we may be misunderstood for long periods of time.
+''')
+
+    with open(f'{TEST_PATH}/base_custom_words.md', 'w', encoding='utf-8') as f:
+        f.write('''---
+chapter: true
+title: base custom words
+weight: 8
+---
+
+There's a party today called Beer Bust.
+''')
+
+    with open(f'{DICTIONARY_PATH}/base_ignore_words.json', 'w', encoding='utf-8') as f:
+        f.write('''---
+[
+  "They are externally aware",
+  "Invent and Simplify"
+]
+''')
+
+    with open(f'{DICTIONARY_PATH}/base_custom_words.json', 'w', encoding='utf-8') as f:
+        f.write('''---
+{
+    "There's a party today called Beer Bust": "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。"
+}
+''')
 
     # Run tests
     yield
@@ -90,3 +126,18 @@ def test_html_tag_4(unit_test):
         content = f.read()
         assert '<div><i class="far fa-eye" style="color:#262262"></i> Navigate <a href="#lab_5_challenge_a" ' \
                'target="_self">**here**</a> for **a** solution.</div>' in content
+
+def test_dictionary_1(unit_test):
+    print("test base_ignore_words")
+    translate_page(f'{TEST_PATH}/base_ignore_words', const.LANG_EN, const.LANG_JA, False, False, True, f'./', False, DICTIONARY_PATH)
+    with open(f'{TEST_PATH}/base_ignore_words.ja.md') as f:
+        content = f.read()
+        assert "They are externally aware" in content
+        assert "Invent and Simplify" in content
+
+def test_dictionary_1(unit_test):
+    print("test base_ignore_words")
+    translate_page(f'{TEST_PATH}/base_custom_words', const.LANG_EN, const.LANG_JA, False, False, True, f'./', False, DICTIONARY_PATH)
+    with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
+        content = f.read()
+        assert "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。" in content

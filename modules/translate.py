@@ -5,6 +5,7 @@ import botocore
 import click
 import requests
 import json
+import datetime
 
 from modules import const
 from modules import processing
@@ -37,14 +38,16 @@ class Translator:
                 for n in json.load(f):
                     self.custom_words[n] = n
 
-            custom_words = {k: v for k, v in sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
+            custom_words = {k: v for k, v in
+                            sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
             for w in custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
 
     def save_dictionaries(self):
         if self.dictionary_path != "":
             saving_history = self.translate_history.copy()
-            with open(os.path.join(self.dictionary_path, self.new_custom_dictionary + ".json"), "w",
+            with open(os.path.join(self.dictionary_path,
+                                   datetime.datetime.now().strftime('translation_history_%Y-%m-%d_%H:%M:%S.json')), "w+",
                       encoding="utf-8") as fp:
                 json.dump(saving_history, fp, ensure_ascii=False, indent=4)
 
@@ -56,7 +59,8 @@ class Translator:
         # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
         sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.", r"\1#PERIOD#",
                            text)
-        sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if len(s.strip()) > 0]
+        sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+                     len(s.strip()) > 0]
 
         translated_text = ""
         results = []
@@ -93,6 +97,7 @@ class Translator:
                 src_text = re.sub(self.custom_words_patterns[src_word], id, src_text)
 
                 # lookup_tableの中身を代入する。
+                print(self.custom_words[src_word])
                 self.lookup_table[id] = {
                     "leaf_types": [const.TYPE_TEXT],
                     "leaf_value": self.custom_words[src_word]
@@ -118,7 +123,8 @@ class Translator:
             }
 
             try:
-                response = requests.post(DEEPL_API_FREE_ENDPOINT if self.deepl_free else DEEPL_API_PRO_ENDPOINT, data=params)
+                response = requests.post(DEEPL_API_FREE_ENDPOINT if self.deepl_free else DEEPL_API_PRO_ENDPOINT,
+                                         data=params)
                 response.raise_for_status()
                 result = json.loads(response.content.decode('utf-8'))
                 transaltedText = result['translations'][0]['text']
@@ -144,7 +150,6 @@ class Translator:
                 raise ValueError('The parameters you provided are incorrect: {}'.format(e))
 
         return transaltedText
-
 
     def translateAst(self, ast):
         result_children = []

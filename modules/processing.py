@@ -329,6 +329,8 @@ def mdProcessingAfterTranslation(dest_file_path,
                         attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
                     elif leaf_type == const.TYPE_HTML:
                         attribute = leaf_data["leaf_value"]
+                    elif leaf_type == const.TYPE_TEXT:
+                        attribute = leaf_data["leaf_value"]
                     processed_line = processed_line.replace(id, attribute)
 
         if "&#x20;" in line:

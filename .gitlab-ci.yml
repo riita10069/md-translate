@@ -18,7 +18,7 @@ setup_py:
   stage: test
   script:
   - |
-    if git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_REF_NAME | grep -q '^setup\.py$'; then
+    if git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA | grep -q '^setup\.py$'; then
       echo "setup.py file has changed."
     else
       echo "No changes in setup.py file. CI will fail."

@@ -153,7 +153,7 @@ def test_html_tag_4(unit_test):
 def test_dictionary_1(unit_test):
     print("test base_ignore_words")
     translate_page(f'{TEST_PATH}/base_ignore_words', const.LANG_EN, const.LANG_JA, False, False, True, f'./', False,
-                   DICTIONARY_PATH, "")
+                   DICTIONARY_PATH, get_latest_translation_history_file(DICTIONARY_PATH))
     with open(f'{TEST_PATH}/base_ignore_words.ja.md') as f:
         content = f.read()
         assert "They are externally aware" in content
@@ -164,7 +164,7 @@ def test_dictionary_1(unit_test):
 def test_dictionary_2(unit_test):
     print("test base_ignore_words")
     translate_page(f'{TEST_PATH}/base_custom_words', const.LANG_EN, const.LANG_JA, False, False, True, f'./', False,
-                   DICTIONARY_PATH, "")
+                   DICTIONARY_PATH, get_latest_translation_history_file(DICTIONARY_PATH))
     with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
         content = f.read()
         assert "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。" in content

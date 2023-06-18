@@ -98,7 +98,9 @@ def get_latest_translation_history_file(folder_path):
     file_suffix = '.json'
 
     file_names = os.listdir(folder_path)
+    print(file_names)
     file_names = [f for f in file_names if f.startswith(file_prefix) and f.endswith(file_suffix)]
+    print(file_names)
 
     if not file_names:
         return None
@@ -130,7 +132,11 @@ def mutate_path(ctx, param, value):
 def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":
-        custom_dictionary_path = os.path.join(dictionary_path, get_latest_translation_history_file(dictionary_path))
+        latest_translation_history_file = get_latest_translation_history_file(dictionary_path)
+        if latest_translation_history_file is None:
+            custom_dictionary_path = ""
+        else:
+            custom_dictionary_path = os.path.join(dictionary_path, latest_translation_history_file)
 
     if path.endswith(".md"):
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):

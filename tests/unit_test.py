@@ -82,7 +82,7 @@ weight: 8
 ---
 
 There is a party today called Beer Bust.
-This is, in effect, a drinking party.
+This is, in effect, a drinking.
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_ignore_words.json', 'w', encoding='utf-8') as f:
@@ -102,13 +102,13 @@ This is, in effect, a drinking party.
 
     with open(f'{DICTIONARY_PATH}/translation_history_2023-06-14_22:11:49.json', 'w', encoding='utf-8') as f:
         f.write('''{
-  "drinking party": "潰れるまで飲め。"
+  "drinking": "潰れるまで飲め。"
 }
 ''')
 
     with open(f'{DICTIONARY_PATH}/translation_history_2023-06-15_06:30:34.json', 'w', encoding='utf-8') as f:
         f.write('''{
-  "drinking party": "水の飲み過ぎに気をつけて。"
+  "drinking": "水の飲み過ぎに気をつけて。"
 }
 ''')
 

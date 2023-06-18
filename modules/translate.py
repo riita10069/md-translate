@@ -66,7 +66,7 @@ class Translator:
         # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
         sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.", r"\1#PERIOD#",
                            text)
-        sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+        sentences = [s.replace("#PERIOD#", ".") for s in re.split(r"(?<=\.)\s+", sentences) if
                      len(s.strip()) > 0]
 
         translated_text = ""

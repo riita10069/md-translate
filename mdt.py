@@ -4,6 +4,7 @@ import json
 import shutil
 import click
 import re
+from datetime import datetime
 
 from pathlib import Path
 from modules import const
@@ -94,15 +95,19 @@ def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, 
 
 def get_latest_translation_history_file(folder_path):
     file_prefix = 'translation_history_'
+    file_suffix = '.json'
 
     file_names = os.listdir(folder_path)
-    file_names = [f for f in file_names if f.startswith(file_prefix)]
+    file_names = [f for f in file_names if f.startswith(file_prefix) and f.endswith(file_suffix)]
+
     if not file_names:
         return None
 
-    file_names.sort(reverse=True)  # ファイルを降順にソートします
-    latest_file_name = file_names[0]
+    latest_timestamp = max([datetime.strptime(f[len(file_prefix):-len(file_suffix)], '%Y-%m-%d_%H:%M:%S') for f in file_names])
+    latest_file_name = file_prefix + latest_timestamp.strftime("%Y-%m-%d_%H:%M:%S") + file_suffix
+
     return latest_file_name
+
 
 def mutate_path(ctx, param, value):
     return "./" + value

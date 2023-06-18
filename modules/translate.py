@@ -29,8 +29,9 @@ class Translator:
         self.deepl_pro = deepl_pro
         self.lookup_table = lookup_table
 
-        if dictionary_path != "":
+        print(custom_dictionary_path)
 
+        if dictionary_path != "":
             if custom_dictionary_path:
                 with open(custom_dictionary_path, 'r', encoding="utf-8") as f:
                     custom_dictionary = json.load(f)
@@ -45,6 +46,7 @@ class Translator:
                 for n in json.load(f):
                     self.custom_words[n] = n
 
+            print(self.custom_words)
             self.custom_words = {k: v for k, v in
                             sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
             for w in self.custom_words:

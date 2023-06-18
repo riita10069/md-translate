@@ -18,7 +18,7 @@ DEEPL_API_PRO_ENDPOINT = 'https://api.deepl.com/v2/translate'
 
 
 class Translator:
-    def __init__(self, dictionary_path, src_lang, dest_lang, deepl_free, deepl_pro, lookup_table):
+    def __init__(self, dictionary_path, src_lang, dest_lang, deepl_free, deepl_pro, lookup_table, custom_dictionary_path):
         self.dictionary_path = dictionary_path
         self.translate_history = {}  # <src_word>: <tgt_word>
         self.custom_words = {}  # <src_word>: <tgt_word>
@@ -30,6 +30,13 @@ class Translator:
         self.lookup_table = lookup_table
 
         if dictionary_path != "":
+
+            if custom_dictionary_path:
+                with open(custom_dictionary_path, 'r', encoding="utf-8") as f:
+                    custom_dictionary = json.load(f)
+                    for k, v in custom_dictionary.items():
+                        self.custom_words[k] = v
+
             with open(os.path.join(self.dictionary_path, 'base_custom_words.json'), 'r', encoding="utf-8") as f:
                 for k, v in json.load(f).items():
                     self.custom_words[k] = v
@@ -38,9 +45,9 @@ class Translator:
                 for n in json.load(f):
                     self.custom_words[n] = n
 
-            custom_words = {k: v for k, v in
+            self.custom_words = {k: v for k, v in
                             sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
-            for w in custom_words:
+            for w in self.custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
 
     def save_dictionaries(self):

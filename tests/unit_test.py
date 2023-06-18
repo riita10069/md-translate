@@ -3,6 +3,7 @@ import shutil
 import pytest
 
 from mdt import translate_page
+from mdt import get_latest_translation_history_file
 from modules import const
 
 TEST_PATH = 'test_dir'
@@ -70,6 +71,7 @@ weight: 7
 
 Invent and Simplify
 Leaders expect and require innovation and invention from their teams and always find ways to simplify. They are externally aware, look for new ideas from everywhere, and are not limited by “not invented here.” As we do new things, we accept that we may be misunderstood for long periods of time.
+Amazon Cloud9
 ''')
 
     with open(f'{TEST_PATH}/base_custom_words.md', 'w', encoding='utf-8') as f:
@@ -80,18 +82,33 @@ weight: 8
 ---
 
 There is a party today called Beer Bust.
+This is, in effect, a drinking party.
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_ignore_words.json', 'w', encoding='utf-8') as f:
         f.write('''[
   "They are externally aware",
-  "Invent and Simplify"
+  "Invent and Simplify",
+  "Amazon Cloud9"
 ]
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_custom_words.json', 'w', encoding='utf-8') as f:
         f.write('''{
-  "There is a party today called Beer Bust.": "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。"
+  "There is a party today called Beer Bust.": "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。",
+  "Amazon": "その謎を解明すべく、我々はアマゾンの奥地へ向かった…"
+}
+''')
+
+    with open(f'{DICTIONARY_PATH}/translation_history_2023-06-14_22:11:49.json', 'w', encoding='utf-8') as f:
+        f.write('''{
+  "drinking party": "潰れるまで飲め。"
+}
+''')
+
+    with open(f'{DICTIONARY_PATH}/translation_history_2023-06-15_06:30:34.json', 'w', encoding='utf-8') as f:
+        f.write('''{
+  "drinking party": "水の飲み過ぎに気をつけて。"
 }
 ''')
 
@@ -141,12 +158,20 @@ def test_dictionary_1(unit_test):
         content = f.read()
         assert "They are externally aware" in content
         assert "Invent and Simplify" in content
+        assert "Amazon Cloud9" in content
 
 
-def test_dictionary_1(unit_test):
+def test_dictionary_2(unit_test):
     print("test base_ignore_words")
     translate_page(f'{TEST_PATH}/base_custom_words', const.LANG_EN, const.LANG_JA, False, False, True, f'./', False,
                    DICTIONARY_PATH)
     with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
         content = f.read()
         assert "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。" in content
+        assert "水の飲み過ぎに気をつけて。" in content
+
+
+def test_get_latest_translation_history_file(unit_test):
+    print("test get_latest_translation_history_file")
+    latest_filename = get_latest_translation_history_file(DICTIONARY_PATH)
+    assert "translation_history_2023-06-15_06:30:34.json" == latest_filename

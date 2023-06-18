@@ -82,7 +82,7 @@ weight: 8
 ---
 
 There is a party today called Beer Bust.
-This is, in effect, a drinking.
+This is in effect a drinking.
 ''')
 
     with open(f'{DICTIONARY_PATH}/base_ignore_words.json', 'w', encoding='utf-8') as f:
@@ -108,7 +108,7 @@ This is, in effect, a drinking.
 
     with open(f'{DICTIONARY_PATH}/translation_history_2023-06-15_06:30:34.json', 'w', encoding='utf-8') as f:
         f.write('''{
-  "drinking": "水の飲み過ぎに気をつけて。"
+  "drinking": "水の飲み過ぎに気をつけて"
 }
 ''')
 
@@ -168,7 +168,7 @@ def test_dictionary_2(unit_test):
     with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
         content = f.read()
         assert "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。" in content
-        assert "水の飲み過ぎに気をつけて。" in content
+        assert "水の飲み過ぎに気をつけて" in content
 
 
 def test_get_latest_translation_history_file(unit_test):

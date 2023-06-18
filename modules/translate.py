@@ -29,8 +29,6 @@ class Translator:
         self.deepl_pro = deepl_pro
         self.lookup_table = lookup_table
 
-        print(custom_dictionary_path)
-
         if dictionary_path != "":
             if custom_dictionary_path:
                 with open(custom_dictionary_path, 'r', encoding="utf-8") as f:

@@ -98,9 +98,7 @@ def get_latest_translation_history_file(folder_path):
     file_suffix = '.json'
 
     file_names = os.listdir(folder_path)
-    print(file_names)
     file_names = [f for f in file_names if f.startswith(file_prefix) and f.endswith(file_suffix)]
-    print(file_names)
 
     if not file_names:
         return None

@@ -29,8 +29,6 @@ class Translator:
         self.deepl_pro = deepl_pro
         self.lookup_table = lookup_table
 
-        print("custom_dictionary_path: ", custom_dictionary_path)
-
         if custom_dictionary_path != "":
             with open(custom_dictionary_path, 'r', encoding="utf-8") as f:
                 custom_dictionary = json.load(f)
@@ -46,7 +44,6 @@ class Translator:
                 for n in json.load(f):
                     self.custom_words[n] = n
 
-            print(self.custom_words)
             self.custom_words = {k: v for k, v in
                             sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
             for w in self.custom_words:
@@ -68,8 +65,8 @@ class Translator:
         # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
         sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.", r"\1#PERIOD#",
                            text)
-        sentences = [s.replace("#PERIOD#", ".") for s in re.split(r"(?<=\.)\s+", sentences) if
-                     len(s.strip()) > 0]
+        sentences = sentences.split(".")
+        sentences = [s.replace("#PERIOD#", ".") for s in sentences if len(s) > 0]
 
         translated_text = ""
         results = []
@@ -106,7 +103,6 @@ class Translator:
                 src_text = re.sub(self.custom_words_patterns[src_word], id, src_text)
 
                 # lookup_tableの中身を代入する。
-                print(self.custom_words[src_word])
                 self.lookup_table[id] = {
                     "leaf_types": [const.TYPE_TEXT],
                     "leaf_value": self.custom_words[src_word]

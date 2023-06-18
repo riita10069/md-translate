@@ -125,7 +125,7 @@ def mutate_path(ctx, param, value):
 def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":
-        custom_dictionary_path = get_latest_translation_history_file(dictionary_path)
+        custom_dictionary_path = os.path.join(dictionary_path, get_latest_translation_history_file(dictionary_path))
 
     if path.endswith(".md"):
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):

@@ -115,7 +115,8 @@ class Translator:
         return translated_text
 
     def translate_text(self, text):
-        transaltedText = ""
+        translated_text = ""
+
         if self.deepl_free or self.deepl_pro:
             # use DeepL
             if os.getenv('DEEPL_API_KEY') is None:
@@ -134,7 +135,7 @@ class Translator:
                                          data=params)
                 response.raise_for_status()
                 result = json.loads(response.content.decode('utf-8'))
-                transaltedText = result['translations'][0]['text']
+                translated_text = result['translations'][0]['text']
 
             except requests.exceptions.HTTPError as e:
                 print('Failed to translate by DeepL API Free.')
@@ -147,7 +148,7 @@ class Translator:
                     Text=text,
                     SourceLanguageCode=self.src_lang,
                     TargetLanguageCode=self.dest_lang)
-                transaltedText = result.get('TranslatedText')
+                translated_text = result.get('TranslatedText')
 
             except botocore.exceptions.ClientError as e:
                 print('Failed to translate by Amazon Translate.')
@@ -156,7 +157,7 @@ class Translator:
             except botocore.exceptions.ParamValidationError as e:
                 raise ValueError('The parameters you provided are incorrect: {}'.format(e))
 
-        return transaltedText
+        return translated_text
 
     def translateAst(self, ast):
         result_children = []

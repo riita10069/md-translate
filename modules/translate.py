@@ -31,8 +31,7 @@ class Translator:
 
         if custom_dictionary_path != "":
             with open(custom_dictionary_path, 'r', encoding="utf-8") as f:
-                custom_dictionary = json.load(f)
-                for k, v in custom_dictionary.items():
+                for k, v in json.load(f).items():
                     self.custom_words[k] = v
 
         if dictionary_path != "":
@@ -46,8 +45,11 @@ class Translator:
 
             self.custom_words = {k: v for k, v in
                             sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
+
             for w in self.custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
+
+        print(self.custom_words)
 
     def save_dictionaries(self):
         if self.dictionary_path != "":
@@ -75,8 +77,8 @@ class Translator:
             if sentence in self.translate_history.keys():
                 tgt_sentence = self.translate_history[sentence]
             # おなじ文がまるまる辞書にあるなら、そのまま訳語を流用
-            elif sentence in self.custom_words.keys():
-                tgt_sentence = self.custom_words[sentence]
+            elif sentence.strip() in self.custom_words.keys():
+                tgt_sentence = sentence.replace(sentence.strip(), self.custom_words[sentence.strip()])
             # 文のなかの一部の単語が辞書にあるなら、キーワード有りの翻訳を実施
             elif any(self.custom_words_patterns[key].search(sentence) for key in self.custom_words.keys()):
                 tgt_sentence = self.translate_text_with_keyword(sentence)

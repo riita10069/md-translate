@@ -361,6 +361,7 @@ def mdProcessingAfterTranslation(dest_file_path,
     dest_file.write(contents)
     dest_file.flush()
     dest_file.close()
+
     if translator.dictionary_path != "":
         translation_history_processing_after_translation(translator, lookup_table)
 

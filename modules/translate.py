@@ -49,7 +49,6 @@ class Translator:
             for w in self.custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
 
-        print(self.custom_words)
 
     def save_dictionaries(self):
         if self.dictionary_path != "":
@@ -74,11 +73,17 @@ class Translator:
         results = []
         for sentence in sentences:
             # すでに同じ文を翻訳経験あるなら、その履歴を流用
-            if sentence in self.translate_history.keys():
-                tgt_sentence = self.translate_history[sentence]
+            if any([processing.is_text_match(sentence, k) for k in self.translate_history.keys()]):
+                for k in self.translate_history.keys():
+                    if processing.is_text_match(sentence, k):
+                        tgt_sentence = self.translate_history[k]
+                        break
             # おなじ文がまるまる辞書にあるなら、そのまま訳語を流用
-            elif sentence.strip() in self.custom_words.keys():
-                tgt_sentence = sentence.replace(sentence.strip(), self.custom_words[sentence.strip()])
+            elif any([processing.is_text_match(sentence, k) for k in self.custom_words.keys()]):
+                for k in self.custom_words.keys():
+                    if processing.is_text_match(sentence, k):
+                        tgt_sentence = self.custom_words[k]
+                        break
             # 文のなかの一部の単語が辞書にあるなら、キーワード有りの翻訳を実施
             elif any(self.custom_words_patterns[key].search(sentence) for key in self.custom_words.keys()):
                 tgt_sentence = self.translate_text_with_keyword(sentence)

@@ -1,6 +1,7 @@
 import os
 import json
 import yaml
+import re
 
 from modules import const
 from modules import translate
@@ -403,3 +404,11 @@ def translation_history_processing_after_translation(translator, lookup_table):
             processed_line = processed_line.replace('\\(', '(')
 
         translator.translate_history[k] = processed_line
+
+def is_text_match(text1, text2):
+    # ピリオド、行末の改行文字、前後の半角スペースを除去して、小文字に変換
+    processed_text1 = re.sub(r'[.\n\s]', '', text1.lower())
+    processed_text2 = re.sub(r'[.\n\s]', '', text2.lower())
+
+    # 文章が一致しているか判断
+    return processed_text1 == processed_text2

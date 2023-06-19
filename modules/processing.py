@@ -361,3 +361,44 @@ def mdProcessingAfterTranslation(dest_file_path,
     dest_file.write(contents)
     dest_file.flush()
     dest_file.close()
+
+    translation_history_processing_after_translation(translator, lookup_table)
+
+
+def translation_history_processing_after_translation(translator, lookup_table):
+    for k, processed_line in translator.translate_history.items():
+        # 置き換えた strong などの文字列を、lookup_tableを使って戻します。
+        for id in lookup_table["ids"]:
+            if id in processed_line:
+                attribute = ""
+                leaf_data = lookup_table[id]
+                reversed_leaf_data = leaf_data["leaf_types"][::-1]
+                for leaf_type in reversed_leaf_data:
+                    if leaf_type == const.TYPE_STRONG:
+                        attribute = make_strong(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_INLINE_CODE:
+                        attribute = make_inlinecode(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_EMPHASIS:
+                        attribute = make_emphasis(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_LINK:
+                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
+                    elif leaf_type == const.TYPE_HTML:
+                        attribute = leaf_data["leaf_value"]
+                    elif leaf_type == const.TYPE_TEXT:
+                        attribute = leaf_data["leaf_value"]
+                    processed_line = processed_line.replace(id, attribute)
+
+        if "&#x20;" in processed_line:
+            processed_line = processed_line.replace("&#x20;", "")
+        if "***" in processed_line:
+            processed_line = processed_line.replace("***", "---")
+        if "\\[" in processed_line:
+            processed_line = processed_line.replace("\\[", "[")
+        if "\\_" in processed_line:
+            processed_line = processed_line.replace("\\_", "_")
+        if '\\ n' in processed_line:
+            processed_line = processed_line.replace('\\ n', '\\n')
+        if '\\(' in processed_line:
+            processed_line = processed_line.replace('\\(', '(')
+
+        translator.translate_history[k] = processed_line

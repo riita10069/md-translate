@@ -18,7 +18,8 @@ DEEPL_API_PRO_ENDPOINT = 'https://api.deepl.com/v2/translate'
 
 
 class Translator:
-    def __init__(self, dictionary_path, src_lang, dest_lang, deepl_free, deepl_pro, lookup_table, custom_dictionary_path):
+    def __init__(self, dictionary_path, src_lang, dest_lang, deepl_free, deepl_pro, lookup_table,
+                 custom_dictionary_path):
         self.dictionary_path = dictionary_path
         self.translate_history = {}  # <src_word>: <tgt_word>
         self.custom_words = {}  # <src_word>: <tgt_word>
@@ -44,17 +45,17 @@ class Translator:
                     self.custom_words[n] = n
 
             self.custom_words = {k: v for k, v in
-                            sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
+                                 sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
 
             for w in self.custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
-
 
     def save_dictionaries(self):
         if self.dictionary_path != "":
             saving_history = self.translate_history.copy()
             with open(os.path.join(self.dictionary_path,
-                                   datetime.datetime.now().strftime('translation_history_%Y-%m-%d_%H:%M:%S.json')), "w+",
+                                   datetime.datetime.now().strftime('translation_history_%Y-%m-%d_%H:%M:%S.json')),
+                      "w+",
                       encoding="utf-8") as fp:
                 json.dump(saving_history, fp, ensure_ascii=False, indent=4)
 
@@ -68,8 +69,10 @@ class Translator:
                 result_lines.append(self.translate_text(text))
             else:
                 # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
-                sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.", r"\1#PERIOD#", text)
-                sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if len(s.strip()) > 0]
+                sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
+                                   r"\1#PERIOD#", text)
+                sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+                             len(s.strip()) > 0]
                 translated_text = ""
                 results = []
                 for sentence in sentences:
@@ -88,8 +91,8 @@ class Translator:
                     # 翻訳履歴に追加
                     self.translate_history[sentence] = tgt_sentence
                     results.append(tgt_sentence)
+                translated_text = "".join(results)
 
-            translated_text = "".join(results)
             result_lines.append(translated_text)
         target_text = '\n'.join(result_lines)
         return target_text

@@ -60,38 +60,38 @@ class Translator:
                 json.dump(saving_history, fp, ensure_ascii=False, indent=4)
 
     def translate(self, source_text):
+        # 辞書利用がない場合は、特に処理なし。
+        if self.dictionary_path == "":
+            return self.translate_text(source_text)
+
         lines = source_text.split('\n')
         result_lines = []
 
         for text in lines:
-            # 辞書利用がない場合は、特に処理なし。
-            if self.dictionary_path == "":
-                result_lines.append(self.translate_text(text))
-            else:
-                # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
-                sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
-                                   r"\1#PERIOD#", text)
-                sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
-                             len(s.strip()) > 0]
-                translated_text = ""
-                results = []
-                for sentence in sentences:
-                    # すでに同じ文を翻訳経験あるなら、その履歴を流用
-                    if sentence in self.translate_history.keys():
-                        tgt_sentence = self.translate_history[sentence]
-                    # おなじ文がまるまる辞書にあるなら、そのまま訳語を流用
-                    elif sentence in self.custom_words.keys():
-                        tgt_sentence = self.custom_words[sentence]
-                    # 文のなかの一部の単語が辞書にあるなら、キーワード有りの翻訳を実施
-                    elif any(self.custom_words_patterns[key].search(sentence) for key in self.custom_words.keys()):
-                        tgt_sentence = self.translate_text_with_keyword(sentence)
-                    # 文のなかに辞書にある単語が含まれていないなら、普通に翻訳を実施
-                    else:
-                        tgt_sentence = self.translate_text(sentence)
-                    # 翻訳履歴に追加
-                    self.translate_history[sentence] = tgt_sentence
-                    results.append(tgt_sentence)
-                translated_text = "".join(results)
+            # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
+            sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
+                               r"\1#PERIOD#", text)
+            sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+                         len(s.strip()) > 0]
+            translated_text = ""
+            results = []
+            for sentence in sentences:
+                # すでに同じ文を翻訳経験あるなら、その履歴を流用
+                if sentence in self.translate_history.keys():
+                    tgt_sentence = self.translate_history[sentence]
+                # おなじ文がまるまる辞書にあるなら、そのまま訳語を流用
+                elif sentence in self.custom_words.keys():
+                    tgt_sentence = self.custom_words[sentence]
+                # 文のなかの一部の単語が辞書にあるなら、キーワード有りの翻訳を実施
+                elif any(self.custom_words_patterns[key].search(sentence) for key in self.custom_words.keys()):
+                    tgt_sentence = self.translate_text_with_keyword(sentence)
+                # 文のなかに辞書にある単語が含まれていないなら、普通に翻訳を実施
+                else:
+                    tgt_sentence = self.translate_text(sentence)
+                # 翻訳履歴に追加
+                self.translate_history[sentence] = tgt_sentence
+                results.append(tgt_sentence)
+            translated_text = "".join(results)
 
             result_lines.append(translated_text)
         target_text = '\n'.join(result_lines)

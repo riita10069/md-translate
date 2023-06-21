@@ -92,8 +92,8 @@ class Translator:
                 self.translate_history[sentence] = tgt_sentence
                 results.append(tgt_sentence)
             translated_text = "".join(results)
-
             result_lines.append(translated_text)
+            
         target_text = '\n'.join(result_lines)
         return target_text
 

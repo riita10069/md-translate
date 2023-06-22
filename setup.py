@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
         name='mdt',
-        version='1.0.9',
+        version='1.0.10',
         py_modules=['mdt'],
         packages=['modules'],
         license='MIT',

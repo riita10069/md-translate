@@ -90,8 +90,7 @@ def merge(before, lookup_table):
             if ret != "":
                 after.append({
                     "type": const.TYPE_TEXT,
-                    "value": ret,
-                    "position": before[0][const.POSITION_TYPE]
+                    "value": ret
                 })
                 ret = ""
             after.append(leaf)

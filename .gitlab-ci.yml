@@ -2,12 +2,25 @@ image: nikolaik/python-nodejs:python3.11-nodejs20
 
 
 stages:
-  - build
+  - test
 
-build:
-  stage: build
-  script:
+before_script:
   - pip install -e .
   - npm install -g remark-cli
   - npm install -g remark-directive
+
+test:
+  stage: test
+  script:
   - pytest -v -s .
+
+setup_py:
+  stage: test
+  script:
+  - |
+    if git diff --name-only $CI_COMMIT_BEFORE_SHA $CI_COMMIT_SHA | grep -q '^setup\.py$'; then
+      echo "setup.py file has changed."
+    else
+      echo "No changes in setup.py file. CI will fail."
+      exit 1
+    fi

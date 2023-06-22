@@ -1,6 +1,7 @@
 import os
 import json
 import yaml
+import re
 
 from modules import const
 from modules import translate
@@ -236,7 +237,7 @@ def dfs(ast, lookup_table):
             dfs(node, lookup_table)
 
 
-def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deepl_free, deepl_pro):
+def mdProcessingBeforeTranslation(src_file, temp_file, translator):
     md_file = open(src_file, 'r+', encoding='utf-8')
     md_file_lines = md_file.readlines()
     md_file.close()
@@ -258,12 +259,11 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
 
     # translate hugo header
     if const.HUGO_HEADER_TITLE in header_yaml_data.keys():
-        header_yaml_data[const.HUGO_HEADER_TITLE] = translate.translate(header_yaml_data[const.HUGO_HEADER_TITLE],
-                                                                        src_lang, dest_lang, deepl_free, deepl_pro)
+        header_yaml_data[const.HUGO_HEADER_TITLE] = translator.translate(header_yaml_data[const.HUGO_HEADER_TITLE])
     if const.HUGO_HEADER_TAGS in header_yaml_data.keys() and isinstance(header_yaml_data[const.HUGO_HEADER_TAGS], list):
         new_tags = []
         for tag in header_yaml_data[const.HUGO_HEADER_TAGS]:
-            new_tags.append(translate.translate(tag, src_lang, dest_lang, deepl_free, deepl_pro))
+            new_tags.append(translator.translate(tag))
         header_yaml_data[const.HUGO_HEADER_TAGS] = new_tags
 
     # create .temp.md file with only original .md content
@@ -275,14 +275,13 @@ def mdProcessingBeforeTranslation(src_file, temp_file, src_lang, dest_lang, deep
     return header_yaml_data
 
 
-def jsonProcessingBeforeTranslation():
-    lookup_table = {"current_alphabet": '', "ids": []}
+def jsonProcessingBeforeTranslation(lookup_table):
     json_open = open('output.json', 'r', encoding='utf-8')
     ast = json.load(json_open)
     html_dfs(ast, lookup_table)
     dfs(ast, lookup_table)
 
-    return ast, lookup_table
+    return ast
 
 
 def make_strong(content):
@@ -297,12 +296,12 @@ def make_inlinecode(content):
     return "`" + content + "`"
 
 
-def make_link(content, url, src_lang, dest_lang, deepl_free, deepl_pro):
-    return "[" + translate.translate(content, src_lang, dest_lang, deepl_free, deepl_pro) + "]" + "(" + url + ")"
+def make_link(content, url, translator):
+    return "[" + translator.translate(content) + "]" + "(" + url + ")"
 
 
-def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free, deepl_pro,
-                                 translated_header_yaml_data, lookup_table):
+def mdProcessingAfterTranslation(dest_file_path,
+                                 translated_header_yaml_data, lookup_table, translator):
     # add translated hugo header
     dest_md_file = open(dest_file_path, 'r', encoding='utf-8')
     translated_md_content_lines = dest_md_file.readlines()
@@ -328,9 +327,10 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free
                     elif leaf_type == const.TYPE_EMPHASIS:
                         attribute = make_emphasis(leaf_data["leaf_value"])
                     elif leaf_type == const.TYPE_LINK:
-                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], src_lang, dest_lang,
-                                              deepl_free, deepl_pro)
+                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
                     elif leaf_type == const.TYPE_HTML:
+                        attribute = leaf_data["leaf_value"]
+                    elif leaf_type == const.TYPE_TEXT:
                         attribute = leaf_data["leaf_value"]
                     processed_line = processed_line.replace(id, attribute)
 
@@ -351,9 +351,64 @@ def mdProcessingAfterTranslation(dest_file_path, src_lang, dest_lang, deepl_free
 
     # merge translated hugo header and processed_md_body
     dest_file = open(dest_file_path, 'w+', encoding='utf-8')
-    contents = const.HUGO_HEADER_DELIMITER + yaml.dump(
-        translated_header_yaml_data,
-        allow_unicode=True) + const.HUGO_HEADER_DELIMITER + "\n" + processed_md_body
+
+    contents = ""
+    if translated_header_yaml_data == "":
+        contents = processed_md_body
+    else:
+        contents = const.HUGO_HEADER_DELIMITER + yaml.dump(
+            translated_header_yaml_data,
+            allow_unicode=True) + const.HUGO_HEADER_DELIMITER + "\n" + processed_md_body
     dest_file.write(contents)
     dest_file.flush()
     dest_file.close()
+
+    if translator.dictionary_path != "":
+        translation_history_processing_after_translation(translator, lookup_table)
+
+
+def translation_history_processing_after_translation(translator, lookup_table):
+    for k, processed_line in translator.translate_history.items():
+        # 置き換えた strong などの文字列を、lookup_tableを使って戻します。
+        for id in lookup_table["ids"]:
+            if id in processed_line:
+                attribute = ""
+                leaf_data = lookup_table[id]
+                reversed_leaf_data = leaf_data["leaf_types"][::-1]
+                for leaf_type in reversed_leaf_data:
+                    if leaf_type == const.TYPE_STRONG:
+                        attribute = make_strong(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_INLINE_CODE:
+                        attribute = make_inlinecode(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_EMPHASIS:
+                        attribute = make_emphasis(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_LINK:
+                        attribute = make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
+                    elif leaf_type == const.TYPE_HTML:
+                        attribute = leaf_data["leaf_value"]
+                    elif leaf_type == const.TYPE_TEXT:
+                        attribute = leaf_data["leaf_value"]
+                    processed_line = processed_line.replace(id, attribute)
+
+        if "&#x20;" in processed_line:
+            processed_line = processed_line.replace("&#x20;", "")
+        if "***" in processed_line:
+            processed_line = processed_line.replace("***", "---")
+        if "\\[" in processed_line:
+            processed_line = processed_line.replace("\\[", "[")
+        if "\\_" in processed_line:
+            processed_line = processed_line.replace("\\_", "_")
+        if '\\ n' in processed_line:
+            processed_line = processed_line.replace('\\ n', '\\n')
+        if '\\(' in processed_line:
+            processed_line = processed_line.replace('\\(', '(')
+
+        translator.translate_history[k] = processed_line
+
+def is_text_match(text1, text2):
+    # ピリオド、行末の改行文字、前後の半角スペースを除去して、小文字に変換
+    processed_text1 = re.sub(r'[.\n\s]', '', text1.lower())
+    processed_text2 = re.sub(r'[.\n\s]', '', text2.lower())
+
+    # 文章が一致しているか判断
+    return processed_text1 == processed_text2

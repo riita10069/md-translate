@@ -12,5 +12,6 @@ venv
 ast*.json
 gitignore/
 node_modules/
+dictionary/
 package-lock.json
 package.json

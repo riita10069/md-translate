@@ -8,6 +8,7 @@ SAMPLE_PATH = f'{TEST_PATH}/sample_dir'
 NESTED_PATH = f'{SAMPLE_PATH}/nested_dir'
 OUTPUT_PATH = f'{TEST_PATH}/output_dir'
 CASE_PATH = f'{TEST_PATH}/case_dir'
+DICTIONARY_PATH = f'{TEST_PATH}/dictionary'
 
 @pytest.fixture
 def e2e_test(scope='module'):

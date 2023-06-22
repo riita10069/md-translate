@@ -68,7 +68,20 @@ Options:
                                   translated contents  [default: ./]
   --debug                         Output some ast files for debug.
   --help                          Show this message and exit.
+  --dictionary-path               Dictionaries files directory
 ```
+
+### How to use dictionaries
+
+#### base_ignore_words.json
+
+If you register words that you do not want to translate (e.g. AWS service names), they will be output as English words without translation.
+Nouns and whole sentences must be registered to be output properly as sentences.
+
+#### base_custom_words.json
+
+If you register a specific word pair (e.g., "Region": "region") that you want to be translated, it will be replaced and output as such.
+Nouns and whole sentences must be registered to be output properly as sentences.
 
 ## Acknowledgments
 

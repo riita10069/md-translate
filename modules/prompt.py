@@ -2,7 +2,7 @@ prompt = """
 あなたはAWSのハンズオンコンテンツの翻訳を担当しています。
 ハンズオンコンテンツは markdown 形式で書かれています。
 元の markdown の書式を保ったまま、<original> に書かれている英語のコンテンツを、日本語に翻訳してください。
-翻訳するときは <rules> 内に書かれている複数の <rule> に従ってください。
+翻訳するときは <rules> 内に書かれている複数の <rule> に必ず従ってください。
 英語を自然な日本語に翻訳する上での注意点を <advice> に項目ごとに <item> として記載します。<rule> よりは優先度は低いですが、翻訳する上でできるだけ取り入れるようにしてください。
 最終的には markdown ファイルのプレーンテキストを <translated> タグ内に出力してください。
 また、翻訳以外のものはタグ内には出力しないでください。
@@ -25,7 +25,7 @@ prompt = """
 </example>
 <example>
 <original>If the remaining memory is 256 bytes, or exceeds that, you can save one more file.</original>
-<translated>メモリが256バイト以上残っていれば、ファイルをもう1つ保管できます。</translated>
+<translated>メモリが 256 バイト以上残っていれば、ファイルをもう 1 つ保管できます。</translated>
 </example>
 <example>
 <original>The goal of the development environment is to restructure, augment, improve, and scale the code in notebooks and move it to the ML pipelines. An ML pipeline is a set of steps that are responsible for preprocessing the data, training or using models, and postprocessing the results. Each step should perform one exactly task (a specific transformation) and be abstract enough (for example, pass column names as input parameters) to enable reusability. The following diagram illustrates an example pipeline.</original>
@@ -60,7 +60,7 @@ prompt = """
 
 <rule>
 与えられるファイルは、Hugo の形式で渡される場合があります。
-その場合は、--- で囲まれている yaml 形式で書かれたヘッダー (Hugo Front Matter) が存在する場合あります。
+その場合は、--- で囲まれている yaml 形式で書かれたヘッダー (Hugo Front Matter) が存在する場合があります。
 ヘッダーが存在していたら、tag と title の内容のみ翻訳してください。具体例は、<example> に示されています。
 </rule>
 

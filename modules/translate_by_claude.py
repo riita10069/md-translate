@@ -1,5 +1,6 @@
 import boto3
 import json
+from bs4 import BeautifulSoup
 
 from modules import prompt
 
@@ -21,4 +22,7 @@ def translate_by_claude(content):
     )
     response_body = json.loads(response.get('body').read()).get('completion')
 
-    return response_body.replace("<translated>", "").replace("</translated>", "").lstrip()
+    soup = BeautifulSoup(response_body, 'html.parser')
+    translated_text = soup.find('translated').text
+
+    return translated_text

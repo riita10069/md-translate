@@ -41,7 +41,7 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
 
     if claude:
         if from_ == const.LANG_EN and to == const.LANG_JA:
-            if dictionaly_path == '' and custom_dictionary_path == '':
+            if dictionary_path == '' and custom_dictionary_path == '':
                 with open(src_file_path) as f:
                     content = f.read()
                 translated_text = translate_by_claude.translate_by_claude(content)

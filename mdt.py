@@ -41,16 +41,17 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
 
     if claude:
         if from_ == const.LANG_EN and to == const.LANG_JA:
-            with open(src_file_path) as f:
-                content = f.read()
-
-            translated_text = translate_by_claude.translate_by_claude(content)
-
-            with open(dest_file_path, 'w') as f:
-                f.write(translated_text)
-            return
+            if dictionaly_path == '' and custom_dictionary_path == '':
+                with open(src_file_path) as f:
+                    content = f.read()
+                translated_text = translate_by_claude.translate_by_claude(content)
+                with open(dest_file_path, 'w') as f:
+                    f.write(translated_text)
+                return
+            else:
+                raise ValueError('The claude option does not support dictionaly-path and custom-dictionary-path.')
         else:
-            raise ValueError('To use claude option, To use the claude option, from must be ja and to must be en')
+            raise ValueError('To use claude option, from must be en and to must be ja.')
 
     lookup_table = {"current_alphabet": '', "ids": []}
     # 辞書の読み込み

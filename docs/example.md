@@ -35,13 +35,19 @@ export DEEPL_API_KEY=<YourDeepLAPIKey>
 mdt --path index.md --deepl-pro
 ```
 
-6. To translate all .md files in folder samples recursively from English to Japanese
+6. To translate a index.md file from English to Japanese using Claude v2
+
+```bash
+mdt --path index.md --claude
+```
+
+7. To translate all .md files in folder samples recursively from English to Japanese
 
 ```bash
 mdt -r --path samples
 ```
 
-7. To translate a file and output to a designated folder (name: translated) from English to Chinese
+8. To translate a file and output to a designated folder (name: translated) from English to Chinese
 
 ```bash
 mkdir translated

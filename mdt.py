@@ -11,6 +11,7 @@ from modules import const
 from modules import processing
 from modules import remark
 from modules import translate
+from modules import translate_by_claude
 
 
 def get_dest_file_path(filename, from_, to, output):
@@ -32,11 +33,24 @@ def get_dest_file_path(filename, from_, to, output):
     return str(dest_file_path)
 
 
-def translate_page(filename, from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path):
+def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path):
     src_file_path = filename + '.md' if from_ == const.LANG_EN else filename + '.' + from_ + '.md'
 
     temp_file_path = filename + '.temp.md'
     dest_file_path = get_dest_file_path(filename, from_, to, output)
+
+    if claude:
+        if from_ == const.LANG_EN and to == const.LANG_JA:
+            with open(src_file_path) as f:
+                content = f.read()
+
+            translated_text = translate_by_claude.translate_by_claude(content)
+
+            with open(dest_file_path, 'w') as f:
+                f.write(translated_text)
+            return
+        else:
+            raise ValueError('To use claude option, To use the claude option, from must be ja and to must be en')
 
     lookup_table = {"current_alphabet": '', "ids": []}
     # 辞書の読み込み
@@ -120,6 +134,7 @@ def mutate_path(ctx, param, value):
 @click.option('--from', 'from_', help='Source language', default=const.LANG_EN, show_default=True, type=click.Choice(const.LANGUAGE_LIST))
 @click.option('--to', help='Target language', default=const.LANG_JA, show_default=True,
               type=click.Choice(const.LANGUAGE_LIST))
+@click.option('--claude', is_flag=True, default=False, help='Translate with Claude v2. Only available with options where the from parameter is ja and the to parameter is en.', show_default=True)
 @click.option('--deepl-free', is_flag=True, default=False, help='Translate with DeepL API Free. Environment variable "DEEPL_API_KEY" must be set.', show_default=True)
 @click.option('--deepl-pro', is_flag=True, default=False, help='Translate with DeepL API Pro. Environment variable "DEEPL_API_KEY" must be set.', show_default=True)
 @click.option('--output', help='Directory where you want to output the translated contents', default="./",
@@ -127,7 +142,7 @@ def mutate_path(ctx, param, value):
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
 @click.option('--dictionary-path', default="", help='Dictionaries files directory', show_default=True)
 @click.option('--custom-dictionary-path', default="", help='Custom Dictionary Path', show_default=True)
-def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path):
+def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":
         latest_translation_history_file = get_latest_translation_history_file(dictionary_path)
@@ -138,7 +153,7 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, 
 
     if path.endswith(".md"):
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):
-            translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+            translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
 
     else:
         if recursive:
@@ -148,7 +163,7 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, 
                             from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
                         click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
 
         else:
             for filename in os.listdir(path):
@@ -157,6 +172,6 @@ def run(path, recursive, hugo, from_, to, deepl_free, deepl_pro, output, debug, 
                             from_ == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, claude, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
 if __name__ == '__main__':
     run()

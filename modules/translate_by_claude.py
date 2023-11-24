@@ -8,7 +8,7 @@ bedrock_runtime_client = boto3.client(service_name='bedrock-runtime', region_nam
 def translate_by_claude(content):
     body = json.dumps({
         "prompt": "Human:" + prompt.prompt.format(content) + "\n\nAssistant:",
-        "max_tokens_to_sample": 2000,
+        "max_tokens_to_sample": 100000,
         "temperature": 0.1,
         "top_p": 0.9,
     })

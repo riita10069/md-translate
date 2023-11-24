@@ -190,9 +190,9 @@ def test_deepl_option(e2e_test):
     assert os.path.exists(f'{SAMPLE_PATH}/sample1.ja.md')
     os.remove(f'{SAMPLE_PATH}/sample1.ja.md')
 
+
 def test_claude_option(e2e_test):
     print('use --claude option')
     subprocess.run(f'mdt --path {SAMPLE_PATH}/sample1.md --claude', shell=True)
     assert os.path.exists(f'{SAMPLE_PATH}/sample1.ja.md')
     os.remove(f'{SAMPLE_PATH}/sample1.ja.md')
-

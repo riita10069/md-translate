@@ -39,7 +39,7 @@ This command line tool minumum requires `--path` or `-r --path` options to desig
 
 Default translation source language settings and translation targate language are English and Japanese. User can choose source language and targate language by using `--from` and `--to` options with translation language codes.
 
-Also, by default, the translation is done by Amazon Translate, but it can be done by DeepL by using `--deepl` option. If you want to use DeepL, you need to set the API key of DeepL to the environment variable `DEEPL_API_KEY`.
+Also, by default, the translation is done by Amazon Translate, but it can be done by DeepL by using `--deepl` option. If you want to use DeepL, you need to set the API key of DeepL to the environment variable `DEEPL_API_KEY`. In addition,`--claude` option allows translation using Claude v2. However, this option is only available when `--from` is ja and `--to` is en.
 
 User can use `--output` option to decide output folder (the folder need to exist).
 
@@ -62,6 +62,9 @@ Options:
                                   Source language  [default: en]
   --to [bg|cs|da|de|el|en|es|et|fi|fr|hu|id|it|ja|ko|lt|lv|nb|nl|pl|pt|ro|ru|sk|sl|sv|tr|uk|zh]
                                   Target language  [default: ja]
+  --claude                        Translate with Claude v2. Only available
+                                  with options where the from parameter is ja
+                                  and the to parameter is en.
   --deepl-free                    Translate with DeepL API Free. Environment variable "DEEPL_API_KEY" must be set.
   --deepl-pro                     Translate with DeepL API Pro. Environment variable "DEEPL_API_KEY" must be set.
   --output PATH                   Directory where you want to output the

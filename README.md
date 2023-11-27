@@ -10,48 +10,48 @@ For markdown only translation, use `--no-hugo` option.
 
 python 3.6 ~
 
-## Prerequirements
+## Prerequisites
 
-```
-$ brew install awscli
-$ aws configure
-$ npm install -g remark-cli
-$ npm install remark-directive
+```sh
+brew install awscli
+aws configure
+npm install -g remark-cli
+npm install remark-directive
 ```
 
 > **Note**  
 > Make sure to allow the `translate:TranslateText` action  
 > And you have to specify an aws default region.
 
-## Instalation
+## Installation
 
-```
-$ pip3 install git+https://github.com/riita10069/md-translate.git
+```sh
+pip3 install git+https://github.com/riita10069/md-translate.git
 ```
 
 ## Usage
 
-```
-$ mdt --path index.md
+```sh
+mdt --path index.md
 ```
 
-This command line tool minumum requires `--path` or `-r --path` options to designate a file or folder as the translation targate.
+This command line tool minimum requires `--path` or `-r --path` options to designate a file or folder as the translation target.
 
-Default translation source language settings and translation targate language are English and Japanese. User can choose source language and targate language by using `--from` and `--to` options with translation language codes.
+Default translation source language settings and translation target language are English and Japanese. User can choose source language and the target language by using `--from` and `--to` options with translation language codes.
 
 Also, by default, the translation is done by Amazon Translate, but it can be done by DeepL by using `--deepl` option. If you want to use DeepL, you need to set the API key of DeepL to the environment variable `DEEPL_API_KEY`. In addition,`--claude` option allows translation using Claude v2. However, this option is only available when `--from` is ja and `--to` is en.
 
 User can use `--output` option to decide output folder (the folder need to exist).
 
 For markdown file without hugo header add `--no-hugo` flag.
-Is `--hugo` or nither `--hugo/--no-hugo` flag exist, then this tool regard inputs contain hugo header in .md file.
+Is `--hugo` or neither `--hugo/--no-hugo` flag exist, then this tool regard inputs contain hugo header in .md file.
 
 For more information see : `mdt --help`  
 For command examples see [example](./docs/example.md)
 
 ### OPTIONS
 
-```
+```sh
 Options:
   --path PATH                     Directory or file path where you want to
                                   translate  [required]

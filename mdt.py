@@ -196,6 +196,6 @@ def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output,
                             from_ == const.LANG_EN and "." not in filename.split("/")[-1].rstrip(".md"))):
                         click.echo("translate " + os.path.join(path, re.sub('\.md$', '', filename)))
                         translate_page(
-                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, deepl_free, claude, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+                            re.sub('\.md$', '', os.path.join(path, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(path, filename)), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
 if __name__ == '__main__':
     run()

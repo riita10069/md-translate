@@ -10,6 +10,11 @@ import datetime
 from modules import const
 from modules import processing
 
+from universal import universal_custom_dictionary
+from universal import universal_ignore_dictionary
+
+from modules import translate_by_claude
+
 # init amazon translate client
 boto3Client = boto3.client(service_name='translate')
 
@@ -18,7 +23,7 @@ DEEPL_API_PRO_ENDPOINT = 'https://api.deepl.com/v2/translate'
 
 
 class Translator:
-    def __init__(self, dictionary_path, src_lang, dest_lang, deepl_free, deepl_pro, lookup_table,
+    def __init__(self, dictionary_path, src_lang, dest_lang, claude, deepl_free, deepl_pro, lookup_table,
                  custom_dictionary_path):
         self.dictionary_path = dictionary_path
         self.translate_history = {}  # <src_word>: <tgt_word>
@@ -29,6 +34,7 @@ class Translator:
         self.deepl_free = deepl_free
         self.deepl_pro = deepl_pro
         self.lookup_table = lookup_table
+        self.claude = claude
 
         if custom_dictionary_path != "":
             with open(custom_dictionary_path, 'r', encoding="utf-8") as f:
@@ -36,13 +42,26 @@ class Translator:
                     self.custom_words[k] = v
 
         if dictionary_path != "":
-            with open(os.path.join(self.dictionary_path, 'base_custom_words.json'), 'r', encoding="utf-8") as f:
-                for k, v in json.load(f).items():
-                    self.custom_words[k] = v
+            if not os.path.exists(dictionary_path):
+                os.makedirs(dictionary_path)
+            history_dir = os.path.join(self.dictionary_path, "history")
+            if not os.path.exists(history_dir):
+                os.makedirs(history_dir)
 
-            with open(os.path.join(self.dictionary_path, 'base_ignore_words.json'), 'r', encoding="utf-8") as f:
-                for n in json.load(f):
-                    self.custom_words[n] = n
+            if os.path.exists(os.path.join(self.dictionary_path, 'base_custom_words.json')):
+                with open(os.path.join(self.dictionary_path, 'base_custom_words.json'), 'r', encoding="utf-8") as f:
+                    for k, v in json.load(f).items():
+                        self.custom_words[k] = v
+
+            if os.path.exists(os.path.join(self.dictionary_path, 'base_ignore_words.json')):
+                with open(os.path.join(self.dictionary_path, 'base_ignore_words.json'), 'r', encoding="utf-8") as f:
+                    for n in json.load(f):
+                        self.custom_words[n] = n
+
+            for k, v in universal_custom_dictionary.universal_custom_dictionary.items():
+                self.custom_words[k] = v
+            for n in universal_ignore_dictionary.universal_ignore_dictionary:
+                self.custom_words[n] = n
 
             self.custom_words = {k: v for k, v in
                                  sorted(self.custom_words.items(), key=lambda item: len(item[0]), reverse=True)}
@@ -50,10 +69,18 @@ class Translator:
             for w in self.custom_words:
                 self.custom_words_patterns[w] = re.compile(r"(?:^|\b)" + re.escape(w) + r"(?:$|\b)")
 
-    def save_dictionaries(self):
+    def save_dictionaries(self, src_file_path):
         if self.dictionary_path != "":
             saving_history = self.translate_history.copy()
-            with open(os.path.join(self.dictionary_path,
+
+            history_dir = os.path.join(self.dictionary_path, "history")
+
+            translation_history_json_path = os.path.join(history_dir, src_file_path[2:].split("/")[-1].rstrip(".md"))
+            if not os.path.exists(translation_history_json_path):
+                os.makedirs(translation_history_json_path)
+                print('created directory for history information:', translation_history_json_path)
+
+            with open(os.path.join(translation_history_json_path,
                                    datetime.datetime.now().strftime('translation_history_%Y-%m-%d_%H:%M:%S.json')),
                       "w+",
                       encoding="utf-8") as fp:
@@ -62,20 +89,30 @@ class Translator:
     def translate(self, source_text):
         # 辞書利用がない場合は、特に処理なし。
         if self.dictionary_path == "":
-            return self.translate_text(source_text)
+            return self.translate_text(source_text, False)
 
-        lines = source_text.split('\n')
+        if self.claude:
+            lines = source_text.split("\n## ")
+            lines = ["\n## " + item if i != 0 else item for i, item in enumerate(lines)]
+
+        else:
+            lines = source_text.split('\n')
         result_lines = []
 
         for text in lines:
-            # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
-            sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
-                               r"\1#PERIOD#", text)
-            sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
-                         len(s.strip()) > 0]
+            if self.claude:
+                sentences = [text]
+            else:
+                # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
+                sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
+                                   r"\1#PERIOD#", text)
+                sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+                             len(s.strip()) > 0]
             translated_text = ""
             results = []
             for sentence in sentences:
+                if sentence == "":
+                    continue
                 # すでに同じ文を翻訳経験あるなら、その履歴を流用
                 if sentence in self.translate_history.keys():
                     tgt_sentence = self.translate_history[sentence]
@@ -87,7 +124,7 @@ class Translator:
                     tgt_sentence = self.translate_text_with_keyword(sentence)
                 # 文のなかに辞書にある単語が含まれていないなら、普通に翻訳を実施
                 else:
-                    tgt_sentence = self.translate_text(sentence)
+                    tgt_sentence = self.translate_text(sentence, False)
                 # 翻訳履歴に追加
                 self.translate_history[sentence] = tgt_sentence
                 results.append(tgt_sentence)
@@ -103,26 +140,32 @@ class Translator:
         for src_word in self.custom_words.keys():
             # key: src_word の時の値が、src_textに含まれているかどうかをチェック
             if self.custom_words_patterns[src_word].search(src_text):
-                # lookup_table を使って変換する
-                id = "http://no-translate-" + processing.next_alphabet(self.lookup_table['current_alphabet']) + ".dev"
-                self.lookup_table['current_alphabet'] = processing.next_alphabet(self.lookup_table['current_alphabet'])
-                self.lookup_table["ids"].append(id)
-                src_text = re.sub(self.custom_words_patterns[src_word], id, src_text)
+                if self.claude:
+                    src_text = re.sub(self.custom_words_patterns[src_word], "<no-translate>" + self.custom_words[src_word] + "</no-translate>", src_text)
+                else:
+                    # lookup_table を使って変換する
+                    id = "http://no-translate-" + processing.next_alphabet(self.lookup_table['current_alphabet']) + ".dev"
+                    self.lookup_table['current_alphabet'] = processing.next_alphabet(self.lookup_table['current_alphabet'])
+                    self.lookup_table["ids"].append(id)
+                    src_text = re.sub(self.custom_words_patterns[src_word], id, src_text)
 
-                # lookup_tableの中身を代入する。
-                self.lookup_table[id] = {
-                    "leaf_types": [const.TYPE_TEXT],
-                    "leaf_value": self.custom_words[src_word]
-                }
+                    # lookup_tableの中身を代入する。
+                    self.lookup_table[id] = {
+                        "leaf_types": [const.TYPE_TEXT],
+                        "leaf_value": self.custom_words[src_word]
+                    }
         # 翻訳の実行
-        translated_text = self.translate_text(src_text)
+        translated_text = self.translate_text(src_text, False)
 
         return translated_text
 
-    def translate_text(self, text):
+    def translate_text(self, text, hugo_header):
         translated_text = ""
 
-        if self.deepl_free or self.deepl_pro:
+        if self.claude and not hugo_header:
+            translated_text = translate_by_claude.translate_by_claude(text)
+
+        elif self.deepl_free or self.deepl_pro:
             # use DeepL
             if os.getenv('DEEPL_API_KEY') is None:
                 raise Exception(

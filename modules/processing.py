@@ -258,7 +258,7 @@ def mdProcessingBeforeTranslation(src_file, temp_file, translator):
 
     # translate hugo header
     if const.HUGO_HEADER_TITLE in header_yaml_data.keys():
-        header_yaml_data[const.HUGO_HEADER_TITLE] = translator.translate(header_yaml_data[const.HUGO_HEADER_TITLE])
+        header_yaml_data[const.HUGO_HEADER_TITLE] = translator.translate_text(header_yaml_data[const.HUGO_HEADER_TITLE], True)
     if const.HUGO_HEADER_TAGS in header_yaml_data.keys() and isinstance(header_yaml_data[const.HUGO_HEADER_TAGS], list):
         new_tags = []
         for tag in header_yaml_data[const.HUGO_HEADER_TAGS]:
@@ -266,12 +266,13 @@ def mdProcessingBeforeTranslation(src_file, temp_file, translator):
         header_yaml_data[const.HUGO_HEADER_TAGS] = new_tags
 
     # create .temp.md file with only original .md content
-    md_content_file = open(temp_file, 'x', encoding='utf-8')
-    md_content_file.write(md_content)
-    md_content_file.flush()
-    md_content_file.close()
+    if not translator.claude:
+        md_content_file = open(temp_file, 'x', encoding='utf-8')
+        md_content_file.write(md_content)
+        md_content_file.flush()
+        md_content_file.close()
 
-    return header_yaml_data
+    return header_yaml_data, md_content
 
 
 def jsonProcessingBeforeTranslation(lookup_table):

@@ -26,10 +26,16 @@ prompt = """あなたはAWSのハンズオンコンテンツの翻訳家です�
 <rules>
 <rule>
 半角文字と全角文字の間には必ず半角スペースを空けてください。
+</rule>
+
+<rule>
+渡された英文中に<no-translate></no-translate>タグで囲まれている箇所があれば、その箇所は原文のまま出力してください。
+ただし、以下のように、<no-translate></no-translate>タグそのものは、出力しないでください。
 <example>
-<original>Create a directory `lambda` in the root of your project tree (next to `bin` and `lib`).</original>
-<translated>プロジェクトツリーのルート (bin と lib の隣) に lambda ディレクトリを作成します。</translated>
+<original>Create a **directory** `lambda` in the <no-translate>root</no-translate> of your project tree (next to `bin` and `lib`).</original>
+<translated>プロジェクトツリーのroot (`bin` と `lib` の隣) に `lambda` **ディレクトリ**を作成します。</translated>
 </example>
+上記の例文のように、文中に含まれているmarkdown記法は翻訳後にも残るようにしてください。
 </rule>
 
 <rule>
@@ -39,17 +45,19 @@ prompt = """あなたはAWSのハンズオンコンテンツの翻訳家です�
 </rule>
 
 <rule>
-markdown の中で翻訳せずにそのまま出力しなければならない箇所があります。翻訳してはいけない箇所を <not_translate> に示します。
+markdown の中で翻訳せずにそのまま出力しなければならない箇所があります。翻訳してはいけない箇所を <do_not_translation> に示します。
 
-<not_translate>
+<do_not_translation>
 - URL
 - ` で囲まれている inline code
-- ** で囲まれている bold
 - __ で囲まれている emphasis
 - ``` で囲まれている code block
 - :code の後の [] の内側
 - ::: もしくは :::: で始まるブロックの configuration の json
-</not_translate>
+- <no-translate></no-translate>タグで囲まれている箇所
+- プログラムコードを表している箇所や、実行すべきコマンドを表している箇所
+- AWSにおけるマネジメントコンソールのボタンなど
+</do_not_translation>
 </rule>
 
 <rule>
@@ -61,41 +69,7 @@ AWS のサービス名や固有名詞は翻訳しないでください。例え�
 </rule>
 </rules>
 
-<example>
-入力である <original> に対して期待する出力 <translated> は以下です。
-<example_original>
----
-chapter: true
-tags:
-  - Ingesting Documents
-title: Uploading documents with metadata to S3
-weight: 233
----
-hello, I’m **riita** and this is a test file for new feature.
-So this document is very ~~simple and short~~.
-Once you have completed with either setup, continue with [**_strong and emphasis_** and `inline code`](010-workspace).
-**[This is URL](https://www.amazon.co.jp/)**
-<i class=“far fa-thumbs-up” style=“color:#008296"></i> **Congratulations!** You have completed **Task 3** by applying row-level security. You set user-based rules based on your RLS dataset and checked the data presented in the dashboard.
-<span style=“ssb_s3_white”><u>gggg</u>aaaaa<b>Edit/Preview data</b></span>
-</example_original>
-
-<example_translated>
----
-chapter: true
-tags:
-- 文書の取り込み
-title: メタデータを含むドキュメントを S3 にアップロードする
-weight: 233
----
-こんにちは、私は **riita** です。これは新機能のテストファイルです。
-だから、このドキュメントはとても~~~シンプルで短い~~。
-いずれかのセットアップが完了したら、[**_strong and emphasis_** と `inline code`](010-workspace) に進んでください。
-**[これは URL です](https://www.amazon.co.jp/)**
-<i class=“far fa-thumbs-up” style=“color:#008296”></i> **Congratulations!** 行レベルのセキュリティを適用して **Task 3** を完了しました。RLS データセットに基づいてユーザーベースのルールを設定し、ダッシュボードに表示されているデータを確認しました。
-<span style=“ssb_s3_white”><u>gggg</u>aaaaa<b>Edit/Preview data</b></span>
-</example_translated>
-</example>
-
+以下の<original>タグの中身を翻訳して、<translated>タグ内に出力してください。タグ内には翻訳以外のものは一切入れないでください。
 <original>
 {0}
 </original>

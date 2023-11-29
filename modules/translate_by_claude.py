@@ -28,3 +28,25 @@ def translate_by_claude(content):
     
     translated_text = str(soup.find('translated'))
     return translated_text.replace("<translated>", "").replace("</translated>", "").lstrip()
+
+def translate_by_claude_for_hugo_front_matter(content):
+    body = json.dumps({
+        "prompt": "\n\nHuman: " + prompt.prompt_hugo_front_matter + "\n\nAssistant:",
+        "max_tokens_to_sample": 8000,
+        "temperature": 0,
+        "stop_sequences": ["\n\nHuman"],
+    })
+
+    response = bedrock_runtime_client.invoke_model(
+        body=body,
+        modelId="anthropic.claude-v2",
+        accept="application/json",
+        contentType="application/json"
+    )
+    response_body = json.loads(response.get('body').read()).get('completion')
+
+    soup = BeautifulSoup(response_body, 'html.parser')
+
+    translated_text = str(soup.find('translated'))
+    return translated_text.replace("<translated>", "").replace("</translated>", "").lstrip()
+

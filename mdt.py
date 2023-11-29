@@ -46,6 +46,8 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
     translator = translate.Translator(dictionary_path, from_, to, claude, deepl_free, deepl_pro, lookup_table, custom_dictionary_path)
 
     if claude:
+        if not (from_ == const.LANG_EN and to == const.LANG_JA):
+            raise ValueError('To use claude option, from must be en and to must be ja.')
         if is_hugo:
             translated_header_yaml_data, md_content = processing.mdProcessingBeforeTranslation(
                     src_file_path, temp_file_path, translator)

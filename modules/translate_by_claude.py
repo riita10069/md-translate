@@ -6,7 +6,7 @@ from modules import prompt
 
 bedrock_runtime_client = boto3.client(service_name='bedrock-runtime',
                                       region_name='us-east-1',
-                                      config=Config(connect_timeout=300, read_timeout=300, retries={'max_attempts': 1}))
+                                      config=Config(connect_timeout=300, read_timeout=300, retries={'max_attempts': 5}))
 
 def translate_by_claude(content):
     body = json.dumps({
@@ -18,7 +18,7 @@ def translate_by_claude(content):
 
     response = bedrock_runtime_client.invoke_model(
         body = body,
-        modelId="anthropic.claude-instant-v1",
+        modelId="anthropic.claude-v2",
         accept="application/json",
         contentType="application/json"
     )

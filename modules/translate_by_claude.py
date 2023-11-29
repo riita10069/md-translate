@@ -6,11 +6,11 @@ from modules import prompt
 
 bedrock_runtime_client = boto3.client(service_name='bedrock-runtime',
                                       region_name='us-east-1',
-                                      config=Config(connect_timeout=300, read_timeout=300, retries={'max_attempts': 5}))
+                                      config=Config(connect_timeout=300, read_timeout=300, retries={'max_attempts': 20, 'mode':'standard'}))
 
 def translate_by_claude(content):
     body = json.dumps({
-        "prompt": "\n\nHuman: " + prompt.prompt.format(content) + "\n\nAssistant:",
+        "prompt": "\n\nHuman: " + prompt.prompt + prompt.instruction.format(content) + "\n\nAssistant:",
         "max_tokens_to_sample": 8000,
         "temperature": 0.1,
         "stop_sequences": ["\n\nHuman"],

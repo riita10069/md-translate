@@ -1,3 +1,4 @@
+# そのまま LLM に入力するプロンプト
 prompt = """
 あなたは AWS のハンズオンコンテンツの翻訳担当者です。
 ハンズオンコンテンツは markdown 形式で書かれています。
@@ -30,7 +31,7 @@ prompt = """
 
 <rules>
 <rule>
-半角文字と全角文字の間には必ず半角スペースを空けてください。
+半角文字と全角文字の間には必ず半角スペースを挿入してください。
 <example>
 <original>
 you write a "Hello, world" Lambda function and front it with an API Gateway endpoint.
@@ -42,7 +43,8 @@ you write a "Hello, world" Lambda function and front it with an API Gateway endp
 </rule>
 
 <rule>
-``` ``` で囲まれているコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま翻訳文として出力してください
+``` ``` で囲まれているコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+期待される出力を <example> に示します。
 <example>
 <original>
 ```
@@ -61,6 +63,64 @@ Default output format [None]: <leave blank>
 ```
 </translated>
 </example>
+
+悪い例を <bad_example> に示します。
+<bad_example>
+<original>
+```
+AWS Access Key ID [None]: <type key ID here>
+AWS Secret Access Key [None]: <type access key>
+Default region name [None]: <choose region (e.g. "us-east-1", "eu-west-1")>
+Default output format [None]: <leave blank>
+```
+</original>
+<translated>
+```
+AWS Access Key ID [None]: <type here="" id="" key="">
+AWS Secret Access Key [None]: <type access="" key="">
+Default region name [None]: <choose "eu-west-1")="" "us-east-1",="" (e.g.="" region="">  
+Default output format [None]: <leave blank="">
+```
+</translated>
+</bad_example>
+</rule>
+
+<rule>
+:::code で始まるコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+期待される出力を <example> に示します。
+<example>
+<original>
+:::code{showCopyAction=true showLineNumbers=false language=shell}
+cdk bootstrap
+:::
+</original>
+<translated>
+:::code{showCopyAction=true showLineNumbers=false language=shell}
+cdk bootstrap
+:::
+:::
+</translated>
+</example>
+
+悪い例を <bad_example> に示します。
+<bad_example>
+<original>
+:::code{showCopyAction=true showLineNumbers=false language=shell}
+cdk bootstrap
+:::
+</original>
+<translated>
+:::code{showCopyAction=false showLineNumbers=false language=shell}
+⏳ 環境 aws://123456789012/us-east-1 のブートストラップ中...
+...
+:::
+</translated>
+</bad_example>
+</rule>
+
+<rule>
+& や > などの記号はそのまま出力してください。
+&amp や &gt のような表記は認められません。
 </rule>
 
 <rule>
@@ -153,7 +213,10 @@ Default output format [None]: <leave blank>
 </translated>
 </example>
 </rules>
+"""
 
+# 内容を指定したコンテンツに置き換えて LLM に入力する指示文
+instruction="""
 以下の<original>タグの中身を翻訳して、<translated>タグ内に出力してください。タグ内には翻訳以外のものは一切入れないでください。
 <original>
 {0}

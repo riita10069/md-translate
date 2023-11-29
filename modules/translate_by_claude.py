@@ -12,7 +12,7 @@ def translate_by_claude(content):
     body = json.dumps({
         "prompt": "\n\nHuman: " + prompt.prompt + prompt.instruction.format(content) + "\n\nAssistant:",
         "max_tokens_to_sample": 8000,
-        "temperature": 0.1,
+        "temperature": 0,
         "stop_sequences": ["\n\nHuman"],
     })
 

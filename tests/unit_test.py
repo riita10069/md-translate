@@ -118,7 +118,7 @@ This is in effect a drinking.
 
 def test_html_tag_1(unit_test):
     print('only HTML in the paragraph')
-    translate_page(f'{TEST_PATH}/sample1', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', True, "", "")
+    translate_page(f'{TEST_PATH}/sample1', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', True, "", "")
     with open(f'{TEST_PATH}/sample1.ja.md') as f:
         content = f.read()
         assert '<i class="far fa-thumbs-up" style="color:#008296"></i>' in content
@@ -126,7 +126,7 @@ def test_html_tag_1(unit_test):
 
 def test_html_tag_2(unit_test):
     print('not only HTML in the paragraph')
-    translate_page(f'{TEST_PATH}/sample2', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', False, "", "")
+    translate_page(f'{TEST_PATH}/sample2', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', False, "", "")
     with open(f'{TEST_PATH}/sample2.ja.md') as f:
         content = f.read()
         assert '<i class="far fa-thumbs-up" style="color:#008296"></i>' in content
@@ -134,7 +134,7 @@ def test_html_tag_2(unit_test):
 
 def test_html_tag_3(unit_test):
     print('testing nested HTML')
-    translate_page(f'{TEST_PATH}/nested_html', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', False, "", "")
+    translate_page(f'{TEST_PATH}/nested_html', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', False, "", "")
     with open(f'{TEST_PATH}/nested_html.ja.md') as f:
         content = f.read()
         assert '<span style="ssb_s3_white"><b>Edit/Preview data</b></span>' in content
@@ -142,7 +142,7 @@ def test_html_tag_3(unit_test):
 
 def test_html_tag_4(unit_test):
     print('testing nested HTML with text and strong')
-    translate_page(f'{TEST_PATH}/nested_html_with_text', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', False,
+    translate_page(f'{TEST_PATH}/nested_html_with_text', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', False,
                    "", "")
     with open(f'{TEST_PATH}/nested_html_with_text.ja.md') as f:
         content = f.read()
@@ -152,7 +152,7 @@ def test_html_tag_4(unit_test):
 
 def test_dictionary_1(unit_test):
     print("test base_ignore_words")
-    translate_page(f'{TEST_PATH}/base_ignore_words', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', False,
+    translate_page(f'{TEST_PATH}/base_ignore_words', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', False,
                    DICTIONARY_PATH, os.path.join(DICTIONARY_PATH, get_latest_translation_history_file(DICTIONARY_PATH)))
     with open(f'{TEST_PATH}/base_ignore_words.ja.md') as f:
         content = f.read()
@@ -163,7 +163,7 @@ def test_dictionary_1(unit_test):
 
 def test_dictionary_2(unit_test):
     print("test base_ignore_words")
-    translate_page(f'{TEST_PATH}/base_custom_words', const.LANG_EN, const.LANG_JA, False, False, False, False, True, f'./', False,
+    translate_page(f'{TEST_PATH}/base_custom_words', const.LANG_EN, const.LANG_JA, False, False, False, True, f'./', False,
                    DICTIONARY_PATH, os.path.join(DICTIONARY_PATH, get_latest_translation_history_file(DICTIONARY_PATH)))
     with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
         content = f.read()

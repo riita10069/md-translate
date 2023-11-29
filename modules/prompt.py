@@ -43,7 +43,7 @@ you write a "Hello, world" Lambda function and front it with an API Gateway endp
 </rule>
 
 <rule>
-``` ``` で囲まれているコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+``` で始まり ``` で終わるコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
 コードブロックの内部は、プログラムやコマンドなどの内容であり、翻訳すべき内容ではないので翻訳せずにそのまま出力することは必須の要件です。
 期待される出力を <example> に示します。
 <example>
@@ -64,30 +64,10 @@ Default output format [None]: <leave blank>
 ```
 </translated>
 </example>
-
-悪い例を <bad_example> に示します。
-<bad_example>
-<original>
-```
-AWS Access Key ID [None]: <type key ID here>
-AWS Secret Access Key [None]: <type access key>
-Default region name [None]: <choose region (e.g. "us-east-1", "eu-west-1")>
-Default output format [None]: <leave blank>
-```
-</original>
-<translated>
-```
-AWS Access Key ID [None]: <type here="" id="" key="">
-AWS Secret Access Key [None]: <type access="" key="">
-Default region name [None]: <choose "eu-west-1")="" "us-east-1",="" (e.g.="" region="">  
-Default output format [None]: <leave blank="">
-```
-</translated>
-</bad_example>
 </rule>
 
 <rule>
-:::code で始まるコードブロックの内部は絶対に日本語に翻訳してはいけません。元の文章のまま出力してください。
+:::code で始まり ::: で終わるコードブロックの内部は絶対に日本語に翻訳してはいけません。元の文章のまま出力してください。
 コードブロックの内部は、プログラムやコマンドなどの内容であり、翻訳すべき内容ではないので翻訳せずにそのまま出力することは必須の要件です。
 この要件は :::code{} ブロックの種類 (showLineNumbers, language などのパラメータ) によらず共通で。必ず順守してください。
 期待される出力を <example> に示します。
@@ -101,24 +81,32 @@ cdk bootstrap
 :::code{showCopyAction=true showLineNumbers=false language=shell}
 cdk bootstrap
 :::
-:::
 </translated>
 </example>
-
-悪い例を <bad_example> に示します。
-<bad_example>
+<example>
 <original>
-:::code{showCopyAction=true showLineNumbers=false language=shell}
+:::code{showCopyAction=false showLineNumbers=false language=shell}
 cdk bootstrap
 :::
 </original>
 <translated>
 :::code{showCopyAction=false showLineNumbers=false language=shell}
-⏳ 環境 aws://123456789012/us-east-1 のブートストラップ中...
-...
+cdk bootstrap
 :::
 </translated>
-</bad_example>
+</example>
+<example>
+<original>
+:::code{showCopyAction=true showLineNumbers=false language=yaml}
+cdk bootstrap
+:::
+</original>
+<translated>
+:::code{showCopyAction=true showLineNumbers=false language=yaml}
+cdk bootstrap
+:::
+</translated>
+</example>
 </rule>
 
 <rule>

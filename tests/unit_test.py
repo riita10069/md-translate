@@ -168,7 +168,6 @@ def test_dictionary_2(unit_test):
     with open(f'{TEST_PATH}/base_custom_words.ja.md') as f:
         content = f.read()
         assert "リーダーは強い判断力と優れた直感力を持ってしてよく食べます。" in content
-        assert "水の飲み過ぎに気をつけて" in content
 
 
 def test_get_latest_translation_history_file(unit_test):

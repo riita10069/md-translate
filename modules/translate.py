@@ -48,12 +48,12 @@ class Translator:
             if not os.path.exists(history_dir):
                 os.makedirs(history_dir)
 
-            if os.path.exists('base_custom_words.json'):
+            if os.path.exists(os.path.join(self.dictionary_path, 'base_custom_words.json')):
                 with open(os.path.join(self.dictionary_path, 'base_custom_words.json'), 'r', encoding="utf-8") as f:
                     for k, v in json.load(f).items():
                         self.custom_words[k] = v
 
-            if os.path.exists('base_ignore_words.json'):
+            if os.path.exists(os.path.join(self.dictionary_path, 'base_ignore_words.json')):
                 with open(os.path.join(self.dictionary_path, 'base_ignore_words.json'), 'r', encoding="utf-8") as f:
                     for n in json.load(f):
                         self.custom_words[n] = n

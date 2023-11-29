@@ -67,6 +67,7 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
         dest_file.close()
 
         translator.save_dictionaries(src_file_path)
+        print("translation done:", filename)
         return
 
     # md 前処理 (hugo header の分離と翻訳)
@@ -117,7 +118,6 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
         dest_file_path, translated_header_yaml_data, lookup_table, translator)
 
     os.remove("output.json")
-
     translator.save_dictionaries(src_file_path)
 
 
@@ -155,7 +155,7 @@ def mutate_path(ctx, param, value):
 def multithreading_translation_callback(future):
     result = future.result()
     if result is not None:
-        print(result)
+        print("error:", result)
 
 @click.command()
 @click.option('--path', help='Directory or file path where you want to translate', required=True,
@@ -173,7 +173,7 @@ def multithreading_translation_callback(future):
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
 @click.option('--dictionary-path', default="", help='Dictionaries files directory', show_default=True, type=click.Path(exists=False))
 @click.option('--custom-dictionary-path', default="", help='Custom Dictionary Path', show_default=True, type=click.Path(exists=False))
-@click.option('--concurrency', default=1, help='Number of concurrent threads to use for translation.', show_default=True)
+@click.option('--concurrency', default=1, help='Number of concurrent threads to use for translation by claude.', show_default=True)
 def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path, concurrency):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":
@@ -187,7 +187,6 @@ def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output,
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):
             translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
     else:
-        print('translation concurrency:', concurrency)
         if recursive:
             with ThreadPoolExecutor(max_workers=concurrency) as executor:
                 for current_dir, dirs, files in os.walk(path):

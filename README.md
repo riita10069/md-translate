@@ -72,6 +72,7 @@ Options:
   --debug                         Output some ast files for debug.
   --help                          Show this message and exit.
   --dictionary-path               Dictionaries files directory
+  --concurrency                   Number of concurrent threads to use for translation by Claude.
 ```
 
 ### How to use dictionaries

@@ -29,7 +29,7 @@ prompt = """あなたはAWSのハンズオンコンテンツの翻訳家です�
 </rule>
 
 <rule>
-渡された英文中に<no-translate></no-translate>タグで囲まれている箇所があれば、その箇所は原文の英語のまま、そのまま出力してください。
+渡された英文中に<no-translate></no-translate>タグで囲まれている箇所があれば、その箇所は原文のまま出力してください。
 ただし、以下のように、<no-translate></no-translate>タグそのものは、出力しないでください。
 <example>
 <original>Create a **directory** `lambda` in the <no-translate>root</no-translate> of your project tree (next to `bin` and `lib`).</original>

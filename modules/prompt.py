@@ -43,7 +43,8 @@ you write a "Hello, world" Lambda function and front it with an API Gateway endp
 </rule>
 
 <rule>
-``` ``` で囲まれているコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+``` で始まり ``` で終わるコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+コードブロックの内部は、プログラムやコマンドなどの内容であり、翻訳すべき内容ではないので翻訳せずにそのまま出力することは必須の要件です。
 期待される出力を <example> に示します。
 <example>
 <original>
@@ -63,30 +64,12 @@ Default output format [None]: <leave blank>
 ```
 </translated>
 </example>
-
-悪い例を <bad_example> に示します。
-<bad_example>
-<original>
-```
-AWS Access Key ID [None]: <type key ID here>
-AWS Secret Access Key [None]: <type access key>
-Default region name [None]: <choose region (e.g. "us-east-1", "eu-west-1")>
-Default output format [None]: <leave blank>
-```
-</original>
-<translated>
-```
-AWS Access Key ID [None]: <type here="" id="" key="">
-AWS Secret Access Key [None]: <type access="" key="">
-Default region name [None]: <choose "eu-west-1")="" "us-east-1",="" (e.g.="" region="">  
-Default output format [None]: <leave blank="">
-```
-</translated>
-</bad_example>
 </rule>
 
 <rule>
-:::code で始まるコードブロックの内部は日本語に翻訳してはいけません。元の文章のまま出力してください。
+:::code で始まり ::: で終わるコードブロックの内部は絶対に日本語に翻訳してはいけません。元の文章のまま出力してください。
+コードブロックの内部は、プログラムやコマンドなどの内容であり、翻訳すべき内容ではないので翻訳せずにそのまま出力することは必須の要件です。
+この要件は :::code{} ブロックの種類 (showLineNumbers, language などのパラメータ) によらず共通で。必ず順守してください。
 期待される出力を <example> に示します。
 <example>
 <original>
@@ -98,29 +81,53 @@ cdk bootstrap
 :::code{showCopyAction=true showLineNumbers=false language=shell}
 cdk bootstrap
 :::
-:::
 </translated>
 </example>
-
-悪い例を <bad_example> に示します。
-<bad_example>
+<example>
 <original>
-:::code{showCopyAction=true showLineNumbers=false language=shell}
+:::code{showCopyAction=false showLineNumbers=false language=shell}
 cdk bootstrap
 :::
 </original>
 <translated>
 :::code{showCopyAction=false showLineNumbers=false language=shell}
-⏳ 環境 aws://123456789012/us-east-1 のブートストラップ中...
-...
+cdk bootstrap
 :::
 </translated>
-</bad_example>
+</example>
+<example>
+<original>
+:::code{showCopyAction=true showLineNumbers=false language=yaml}
+cdk bootstrap
+:::
+</original>
+<translated>
+:::code{showCopyAction=true showLineNumbers=false language=yaml}
+cdk bootstrap
+:::
+</translated>
+</example>
 </rule>
 
 <rule>
 & や > などの記号はそのまま出力してください。
-&amp や &gt のような表記は認められません。
+&amp や &gt のような表記は認められません。Hugo として解釈した時に等価な記号を用いてください。
+<example>
+<original>
+> The **AWS::CDK::Metadata** resource is automatically added
+> by the toolkit to every stack. It is used by the AWS CDK team for analytics and
+> to allow us to identify versions with security issues. See [Version Reporting](https://docs.aws.amazon.com/cdk/latest/guide/tools.html) in
+> the AWS CDK User Guide for more details. We will omit the metadata resource in
+> diff views for the rest of this workshop.
+</original>
+<translated>
+> **AWS::CDK::Metadata** リソースは、ツールキットによって自動的にすべてのスタックに追加されます。
+> これは、AWS CDK チームが分析に使用し、
+> セキュリティの問題があるバージョンを特定できるようにするために使用されます。
+> 詳細は、AWS CDK ユーザーガイドの[バージョン報告](https://docs.aws.amazon.com/cdk/latest/guide/tools.html)を参照してください。
+> このワークショップの残りの部分では、差分表示からメタデータリソースを省略します。
+</translated>
+</example>
 </rule>
 
 <rule>

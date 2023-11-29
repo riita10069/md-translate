@@ -31,7 +31,7 @@ def translate_by_claude(content):
 
 def translate_by_claude_for_hugo_front_matter(content):
     body = json.dumps({
-        "prompt": "\n\nHuman: " + prompt.prompt_hugo_front_matter + "\n\nAssistant:",
+        "prompt": "\n\nHuman: " + prompt.prompt_hugo_front_matter.format(content) + "\n\nAssistant:",
         "max_tokens_to_sample": 8000,
         "temperature": 0,
         "stop_sequences": ["\n\nHuman"],

@@ -6,6 +6,7 @@ import click
 import yaml
 import re
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
 
 from pathlib import Path
 from modules import const
@@ -13,7 +14,6 @@ from modules import processing
 from modules import remark
 from modules import translate
 from modules import translate_by_claude
-
 
 def get_dest_file_path(filename, from_, to, output):
     dest_file_path = ''
@@ -152,6 +152,11 @@ def get_latest_translation_history_file(folder_path):
 def mutate_path(ctx, param, value):
     return "./" + value
 
+def multithreading_translation_callback(future):
+    result = future.result()
+    if result is not None:
+        print(result)
+
 @click.command()
 @click.option('--path', help='Directory or file path where you want to translate', required=True,
               callback=mutate_path, type=click.Path(exists=True))
@@ -168,7 +173,8 @@ def mutate_path(ctx, param, value):
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
 @click.option('--dictionary-path', default="", help='Dictionaries files directory', show_default=True, type=click.Path(exists=False))
 @click.option('--custom-dictionary-path', default="", help='Custom Dictionary Path', show_default=True, type=click.Path(exists=False))
-def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path):
+@click.option('--concurrency', default=1, help='Number of concurrent threads to use for translation.', show_default=True)
+def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path, concurrency):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":
         latest_translation_history_file = get_latest_translation_history_file(os.path.join(dictionary_path, "history", path[2:].split("/")[-1].rstrip(".md")))
@@ -180,16 +186,18 @@ def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output,
     if path.endswith(".md"):
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):
             translate_page(re.sub('\.md$', '', path) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '', path), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
-
     else:
+        print('translation concurrency:', concurrency)
         if recursive:
-            for current_dir, dirs, files in os.walk(path):
-                for filename in files:
-                    if (filename.endswith("." + from_ + ".md") or (
-                            from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
-                        click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
-                        translate_page(
-                            re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+            with ThreadPoolExecutor(max_workers=concurrency) as executor:
+                for current_dir, dirs, files in os.walk(path):
+                    for filename in files:
+                        if (filename.endswith("." + from_ + ".md") or (
+                                from_ == const.LANG_EN and "." not in filename.rstrip(".md"))):
+                            click.echo("translate " + os.path.join(current_dir, re.sub('\.md$', '', filename)))
+                            future = executor.submit(translate_page,
+                                re.sub('\.md$', '', os.path.join(current_dir, filename)) if from_ == const.LANG_EN else re.sub('\.' + from_ + '.md', '',  os.path.join(current_dir, filename)), from_, to, claude, deepl_free, deepl_pro, is_hugo, output, debug, dictionary_path, custom_dictionary_path)
+                            future.add_done_callback(multithreading_translation_callback)
 
         else:
             for filename in os.listdir(path):

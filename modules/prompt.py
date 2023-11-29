@@ -118,6 +118,14 @@ Once you have completed with either setup, continue with [**_strong and emphasis
 **[This is URL](https://www.amazon.co.jp/)**
 <i class=“far fa-thumbs-up” style=“color:#008296"></i> **Congratulations!** You have completed **Task 3** by applying row-level security. You set user-based rules based on your RLS dataset and checked the data presented in the dashboard.
 <span style=“ssb_s3_white”><u>gggg</u>aaaaa<b>Edit/Preview data</b></span>
+
+Please don't translate the code block into other languages.
+```
+AWS Access Key ID [None]: <type key ID here>
+AWS Secret Access Key [None]: <type access key>
+Default region name [None]: <choose region (e.g. "us-east-1", "eu-west-1")>
+Default output format [None]: <leave blank>
+```
 </original>
 
 <translated>
@@ -134,6 +142,14 @@ weight: 233
 **[これは URL です](https://www.amazon.co.jp/)**
 <i class=“far fa-thumbs-up” style=“color:#008296”></i> **Congratulations!** 行レベルのセキュリティを適用して **Task 3** を完了しました。RLS データセットに基づいてユーザーベースのルールを設定し、ダッシュボードに表示されているデータを確認しました。
 <span style=“ssb_s3_white”><u>gggg</u>aaaaa<b>Edit/Preview data</b></span>
+
+コードブロックは他の言語に翻訳しないでください。
+```
+AWS Access Key ID [None]: <type key ID here>
+AWS Secret Access Key [None]: <type access key>
+Default region name [None]: <choose region (e.g. "us-east-1", "eu-west-1")>
+Default output format [None]: <leave blank>
+```
 </translated>
 </example>
 </rules>

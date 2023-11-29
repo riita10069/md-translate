@@ -129,7 +129,7 @@ def create_dirs(directory_path):
         current_path = os.path.join(current_path, directory)
         if not os.path.exists(current_path):
             os.makedirs(current_path)
-            print(f"ディレクトリ {current_path} を作成しました。")
+            print(f"Created directory {current_path}.")
 def get_latest_translation_history_file(folder_path):
     file_prefix = 'translation_history_'
     file_suffix = '.json'

@@ -5,7 +5,7 @@ from botocore.config import Config
 from modules import prompt
 
 bedrock_runtime_client = boto3.client(service_name='bedrock-runtime',
-                                      region_name='us-east-1',
+                                      region_name='us-west-2',
                                       config=Config(connect_timeout=300, read_timeout=300, retries={'max_attempts': 20, 'mode':'standard'}))
 
 def translate_by_claude(content):
@@ -18,7 +18,7 @@ def translate_by_claude(content):
 
     response = bedrock_runtime_client.invoke_model(
         body = body,
-        modelId="anthropic.claude-v2",
+        modelId="anthropic.claude-v2:1",
         accept="application/json",
         contentType="application/json"
     )
@@ -39,7 +39,7 @@ def translate_by_claude_for_hugo_front_matter(content):
 
     response = bedrock_runtime_client.invoke_model(
         body=body,
-        modelId="anthropic.claude-v2",
+        modelId="anthropic.claude-v2:1",
         accept="application/json",
         contentType="application/json"
     )

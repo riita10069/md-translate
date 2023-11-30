@@ -164,7 +164,8 @@ class Translator:
 
         if self.claude and not hugo_header:
             translated_text = translate_by_claude.translate_by_claude(text)
-
+        elif self.claude and hugo_header:
+            translated_text = translate_by_claude.translate_by_claude_for_hugo_front_matter(text)
         elif self.deepl_free or self.deepl_pro:
             # use DeepL
             if os.getenv('DEEPL_API_KEY') is None:

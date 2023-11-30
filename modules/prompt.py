@@ -232,7 +232,23 @@ instruction="""
 
 prompt_hugo_front_matter="""
 あなたは英語と日本語が流暢に話せる翻訳家です。あなたの仕事は、英語で記述されたAWSブログのタイトル(<title>)を日本語に翻訳することです。
+
+<rule>
 タイトルには、AWSのサービス名や機能名などの技術用語(Technical Term)が入ることがありますが、そのような英単語は翻訳せずにそのまま出力してください。
+</rule>
+
+但し、<term> に記載する <term_en> は続く <term_ja> として翻訳してください。この指示は <rule> に優先して適用される必要があります。
+
+<term>
+<term_en>construct</term_en>
+<term_ja>コンストラクト</term_ja>
+
+<term_en>cdk deploy</term_en>
+<term_ja>cdk deploy</term_ja>
+
+<term_en>Polish</term_en>
+<term_ja>改善する</term_ja>
+</term>
 
 翻訳結果は、<translated> XMLタグ内に出力し、タイトル(<title>)の内容を日本語に翻訳した内容以外は、一切含めないでください。
 

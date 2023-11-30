@@ -25,9 +25,9 @@ def translate_by_claude(content):
     response_body = json.loads(response.get('body').read()).get('completion')
 
     soup = BeautifulSoup(response_body, 'html.parser')
-    
+
     translated_text = str(soup.find('translated'))
-    return translated_text.replace("<translated>", "").replace("</translated>", "").lstrip()
+    return translated_text.replace("<translated>", "").replace("</translated>", "").strip()
 
 def translate_by_claude_for_hugo_front_matter(content):
     body = json.dumps({
@@ -48,5 +48,5 @@ def translate_by_claude_for_hugo_front_matter(content):
     soup = BeautifulSoup(response_body, 'html.parser')
 
     translated_text = str(soup.find('translated'))
-    return translated_text.replace("<translated>", "").replace("</translated>", "").lstrip()
+    return translated_text.replace("<translated>", "").replace("</translated>", "").strip()
 

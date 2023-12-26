@@ -10,7 +10,7 @@ bedrock_runtime_client = boto3.client(service_name='bedrock-runtime',
 
 def translate_by_claude(content):
     body = json.dumps({
-        "prompt": "\n\nHuman: " + prompt.prompt + prompt.instruction.format(content) + "\n\nAssistant:",
+        "prompt": "\n\nHuman: " + prompt.prompt.format(content)  + "\n\nAssistant:",
         "max_tokens_to_sample": 8000,
         "temperature": 0,
         "stop_sequences": ["\n\nHuman"],
@@ -27,7 +27,8 @@ def translate_by_claude(content):
     soup = BeautifulSoup(response_body, 'html.parser')
 
     translated_text = str(soup.find('translated'))
-    return translated_text.replace("<translated>", "").replace("</translated>", "").strip()
+    return (translated_text.replace("<translated>", "").replace("</translated>", "").
+            replace("<no-translate>", "").replace("</no-translate>", "").strip())
 
 def translate_by_claude_for_hugo_front_matter(content):
     body = json.dumps({

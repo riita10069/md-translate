@@ -51,6 +51,30 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
         if is_hugo:
             translated_header_yaml_data, md_content = processing.mdProcessingBeforeTranslation(
                     src_file_path, temp_file_path, translator)
+        else:
+            with open(src_file_path, 'r') as file:
+                md_content = file.read()
+                translated_header_yaml_data = ""
+        # Claude 利用時のみ、URLを元に戻す。
+        for id in lookup_table["ids"]:
+            if id in md_content:
+                attribute = ""
+                leaf_data = lookup_table[id]
+                reversed_leaf_data = leaf_data["leaf_types"][::-1]
+                for leaf_type in reversed_leaf_data:
+                    if leaf_type == const.TYPE_STRONG:
+                        attribute = processing.make_strong(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_INLINE_CODE:
+                        attribute = processing.make_inlinecode(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_EMPHASIS:
+                        attribute = processing.make_emphasis(leaf_data["leaf_value"])
+                    elif leaf_type == const.TYPE_LINK:
+                        attribute = processing.make_link(leaf_data["leaf_value"], leaf_data["leaf_url"], translator)
+                    elif leaf_type == const.TYPE_HTML:
+                        attribute = leaf_data["leaf_value"]
+                    elif leaf_type == const.TYPE_TEXT:
+                        attribute = leaf_data["leaf_value"]
+                    md_content = md_content.replace(id, attribute)
 
         translated_md_content = translator.translate(md_content)
 
@@ -173,7 +197,7 @@ def multithreading_translation_callback(future):
 @click.option('--debug', is_flag=True, help='Output some ast files for debug.', show_default=True)
 @click.option('--dictionary-path', default="", help='Dictionaries files directory', show_default=True, type=click.Path(exists=False))
 @click.option('--custom-dictionary-path', default="", help='Custom Dictionary Path', show_default=True, type=click.Path(exists=False))
-@click.option('--concurrency', default=1, help='Number of concurrent threads to use for translation by claude.', show_default=True)
+@click.option('--concurrency', default=10, help='Number of concurrent threads to use for translation by claude.', show_default=True)
 def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path, concurrency):
     is_hugo = hugo
     if custom_dictionary_path == "" and dictionary_path != "":

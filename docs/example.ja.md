@@ -53,5 +53,3 @@ mdt -r --path samples
 mkdir translated
 mdt --path index.md --from en --to zh --output translated
 ```
-
-</yourdeeplapikey></yourdeeplapikey>

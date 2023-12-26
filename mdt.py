@@ -42,6 +42,14 @@ def translate_page(filename, from_, to, claude, deepl_free, deepl_pro, is_hugo, 
 
 
     lookup_table = {"current_alphabet": '', "ids": []}
+
+    if custom_dictionary_path == "" and dictionary_path != "":
+        latest_translation_history_file = get_latest_translation_history_file(os.path.join(dictionary_path, "history", src_file_path[2:].rstrip(".md")))
+        if latest_translation_history_file is None:
+            custom_dictionary_path = ""
+        else:
+            custom_dictionary_path = latest_translation_history_file
+
     # 辞書の読み込み
     translator = translate.Translator(dictionary_path, from_, to, claude, deepl_free, deepl_pro, lookup_table, custom_dictionary_path)
 
@@ -200,12 +208,6 @@ def multithreading_translation_callback(future):
 @click.option('--concurrency', default=10, help='Number of concurrent threads to use for translation by claude.', show_default=True)
 def run(path, recursive, hugo, from_, to, claude, deepl_free, deepl_pro, output, debug, dictionary_path, custom_dictionary_path, concurrency):
     is_hugo = hugo
-    if custom_dictionary_path == "" and dictionary_path != "":
-        latest_translation_history_file = get_latest_translation_history_file(os.path.join(dictionary_path, "history", path[2:].split("/")[-1].rstrip(".md")))
-        if latest_translation_history_file is None:
-            custom_dictionary_path = ""
-        else:
-            custom_dictionary_path = latest_translation_history_file
 
     if path.endswith(".md"):
         if path.endswith("." + from_ + ".md") or (from_ == const.LANG_EN and "." not in path.split("/")[-1].rstrip(".md")):

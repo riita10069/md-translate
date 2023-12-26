@@ -75,7 +75,7 @@ class Translator:
 
             history_dir = os.path.join(self.dictionary_path, "history")
 
-            translation_history_json_path = os.path.join(history_dir, src_file_path[2:].split("/")[-1].rstrip(".md"))
+            translation_history_json_path = os.path.join(history_dir, src_file_path[2:].rstrip(".md"))
             if not os.path.exists(translation_history_json_path):
                 os.makedirs(translation_history_json_path)
                 print('created directory for history information:', translation_history_json_path)

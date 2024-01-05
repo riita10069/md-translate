@@ -1,6 +1,5 @@
 from setuptools import setup
 
-
 setup(
         name='mdt',
         version='2.0.0',

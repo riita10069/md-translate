@@ -1,9 +1,8 @@
 from setuptools import setup
 
-
 setup(
         name='mdt',
-        version='1.0.16',
+        version='2.0.1',
         py_modules=['mdt'],
         packages=['modules'],
         license='MIT',

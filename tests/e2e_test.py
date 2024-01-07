@@ -143,7 +143,7 @@ def test_path_option_8(e2e_test):
 
 def test_path_option_9(e2e_test):
     print('specify directory path with -r option / from en to ja')
-    subprocess.run(f'mdt --path {SAMPLE_PATH} -r', shell=True)
+    subprocess.run(f'mdt --path {SAMPLE_PATH} --claude -r', shell=True)
     assert os.path.exists(f'{SAMPLE_PATH}/sample1.ja.md')
     assert os.path.exists(f'{SAMPLE_PATH}/sample2.ja.md')
     assert os.path.exists(f'{NESTED_PATH}/sample4.ja.md')

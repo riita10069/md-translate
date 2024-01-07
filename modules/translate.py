@@ -75,7 +75,7 @@ class Translator:
 
             history_dir = os.path.join(self.dictionary_path, "history")
 
-            translation_history_json_path = os.path.join(history_dir, src_file_path[2:].split("/")[-1].rstrip(".md"))
+            translation_history_json_path = os.path.join(history_dir, src_file_path[2:].rstrip(".md"))
             if not os.path.exists(translation_history_json_path):
                 os.makedirs(translation_history_json_path)
                 print('created directory for history information:', translation_history_json_path)
@@ -91,23 +91,16 @@ class Translator:
         if self.dictionary_path == "":
             return self.translate_text(source_text, False)
 
-        if self.claude:
-            lines = source_text.split("\n## ")
-            lines = ["\n## " + item if i != 0 else item for i, item in enumerate(lines)]
 
-        else:
-            lines = source_text.split('\n')
+        lines = source_text.split('\n')
         result_lines = []
 
         for text in lines:
-            if self.claude:
-                sentences = [text]
-            else:
-                # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
-                sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
-                                   r"\1#PERIOD#", text)
-                sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
-                             len(s.strip()) > 0]
+            # テキストを単文に分割。ピリオドで区切るが、区切りたくないピリオドもあるので（Mt. Fuji など）、泥臭く分割する
+            sentences = re.sub(r"\b(Mr|Ms|Dr|Mt|Jr|Sr|Dept|Co|Corp|Inc|Ltd|Univ|etc|or its affiliates|\d)\.",
+                               r"\1#PERIOD#", text)
+            sentences = [s.replace("#PERIOD#", ".").strip() for s in re.split(r"(?<=\.)\s+", sentences) if
+                         len(s.strip()) > 0]
             translated_text = ""
             results = []
             for sentence in sentences:
